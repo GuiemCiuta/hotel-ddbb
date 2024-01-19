@@ -2,9 +2,7 @@ package db;
 
 import java.sql.*;
 
-import db.schemas.BooksSchema;
-import db.schemas.CustomersSchema;
-import db.schemas.RoomsSchema;
+import db.schemas.*;
 
 public class Setup {
     // Constructor
@@ -19,6 +17,7 @@ public class Setup {
             createRoomsTable();
             createBooksTable();
             createCustomersTable();
+            createInvoicesTable();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -57,18 +56,32 @@ public class Setup {
 
     private void createCustomersTable() throws Exception {
         final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY";
-        final String FIRST_NAME_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)";
-        final String LAST_NAMES_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)";
-        final String NATIONAL_ID_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)";
-        final String ADDRESS_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)";
-        final String EMAIL_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)";
-        final String PHONE_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)";
-        final String COUNTRY_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)";
-        final String PASSWORD_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(50)"; // Only used by users that use our online booking system
-
+        final String FIRST_NAME_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(20)";
+        final String LAST_NAMES_FIELD = CustomersSchema.LAST_NAMES + " VARCHAR(50)";
+        final String NATIONAL_ID_FIELD = CustomersSchema.NATIONAL_ID + " VARCHAR(20)"; // 20 for an ID might seem a really big number, but we want to make sure any county's ID is valid here, just in case
+        final String ADDRESS_FIELD = CustomersSchema.ADDRESS + " VARCHAR(60)";
+        final String EMAIL_FIELD = CustomersSchema.EMAIL + " VARCHAR(255)";
+        final String PHONE_FIELD = CustomersSchema.PHONE + " VARCHAR(15)";
+        final String COUNTRY_FIELD = CustomersSchema.COUNTRY + " VARCHAR(2)"; // We only store two characters (ae ES for Spain)
+        final String PASSWORD_FIELD = CustomersSchema.PASSWORD + " VARCHAR(255)"; // Only used by users that use our online booking system
+                                                                                    // Our passwords will be stored after a sha256 hash
         Statement stm = Database.createStatement();
         String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s, %s, %s, %s, %s);",
                 ID_FIELD, FIRST_NAME_FIELD, LAST_NAMES_FIELD, NATIONAL_ID_FIELD, ADDRESS_FIELD, EMAIL_FIELD, PHONE_FIELD, COUNTRY_FIELD, PASSWORD_FIELD);
+
+        stm.execute(createArtistSQL);
+    }
+
+    private void createInvoicesTable() throws Exception {
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY";
+        final String BOOK_ID_FIELD = InvoicesSchema.BOOK_ID + " INT";
+        final String AMOUNT_FIELD = InvoicesSchema.AMOUNT + " DECIMAL";
+        final String DATE_FIELD = InvoicesSchema.DATE + " DATE";
+        final String PAID_FIELD = InvoicesSchema.PAID + " BOOLEAN";
+
+        Statement stm = Database.createStatement();
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s);",
+                ID_FIELD, BOOK_ID_FIELD, AMOUNT_FIELD, DATE_FIELD, PAID_FIELD);
 
         stm.execute(createArtistSQL);
     }
