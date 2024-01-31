@@ -6,7 +6,7 @@ import db.schemas.*;
 
 public class Setup {
     // Constructor
-    Setup() {
+    public Setup() {
         createTables();
     }
 
@@ -18,6 +18,9 @@ public class Setup {
             createBooksTable();
             createCustomersTable();
             createInvoicesTable();
+            createRoomsPerBookTable();
+            createCheckInsTable();
+            createInternalUsersTable();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -25,7 +28,7 @@ public class Setup {
     }
 
     private void createRoomsTable() throws Exception {
-        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY";
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
         final String NAME_FIELD = RoomsSchema.NAME + " VARCHAR(50)";
         final String PRICE_FIELD = RoomsSchema.PRICE + " DECIMAL";
         final String TYPE_FIELD = RoomsSchema.TYPE + " VARCHAR(20)";
@@ -41,11 +44,11 @@ public class Setup {
     }
 
     private void createBooksTable() throws Exception {
-        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY";
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
         final String CUSTOMER_ID_FIELD = BooksSchema.CUSTOMER_ID + " VARCHAR(50)";
-        final String START_DATE_FIELD = BooksSchema.START_DATE + " DECIMAL";
-        final String END_DATE_FIELD = BooksSchema.END_DATE + " VARCHAR(20)";
-        final String AMOUNT_FIELD = BooksSchema.AMOUNT + " DECIMAL";
+        final String START_DATE_FIELD = BooksSchema.START_DATE + " DATE";
+        final String END_DATE_FIELD = BooksSchema.END_DATE + " DATE";
+        final String AMOUNT_FIELD = BooksSchema.AMOUNT + " DECIMAL(10,2)";
 
         Statement stm = Database.createStatement();
         String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s);",
@@ -55,33 +58,95 @@ public class Setup {
     }
 
     private void createCustomersTable() throws Exception {
-        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY";
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
         final String FIRST_NAME_FIELD = CustomersSchema.FIRST_NAME + " VARCHAR(20)";
         final String LAST_NAMES_FIELD = CustomersSchema.LAST_NAMES + " VARCHAR(50)";
-        final String NATIONAL_ID_FIELD = CustomersSchema.NATIONAL_ID + " VARCHAR(20)"; // 20 for an ID might seem a really big number, but we want to make sure any county's ID is valid here, just in case
+        final String NATIONAL_ID_FIELD = CustomersSchema.NATIONAL_ID + " VARCHAR(20)"; // 20 for an ID might seem a
+                                                                                       // really big number, but we want
+                                                                                       // to make sure any county's ID
+                                                                                       // is valid here, just in case
         final String ADDRESS_FIELD = CustomersSchema.ADDRESS + " VARCHAR(60)";
         final String EMAIL_FIELD = CustomersSchema.EMAIL + " VARCHAR(255)";
         final String PHONE_FIELD = CustomersSchema.PHONE + " VARCHAR(15)";
-        final String COUNTRY_FIELD = CustomersSchema.COUNTRY + " VARCHAR(2)"; // We only store two characters (ae ES for Spain)
-        final String PASSWORD_FIELD = CustomersSchema.PASSWORD + " VARCHAR(255)"; // Only used by users that use our online booking system
-                                                                                    // Our passwords will be stored after a sha256 hash
+        final String COUNTRY_FIELD = CustomersSchema.COUNTRY + " VARCHAR(2)"; // We only store two characters (ae ES for
+                                                                              // Spain)
+        final String PASSWORD_FIELD = CustomersSchema.PASSWORD + " VARCHAR(255)"; // Only used by users that use our
+                                                                                  // online booking system
+                                                                                  // Our passwords will be stored after
+                                                                                  // a sha256 hash
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s, %s, %s, %s, %s);",
-                ID_FIELD, FIRST_NAME_FIELD, LAST_NAMES_FIELD, NATIONAL_ID_FIELD, ADDRESS_FIELD, EMAIL_FIELD, PHONE_FIELD, COUNTRY_FIELD, PASSWORD_FIELD);
+        String createArtistSQL = String.format(
+                "CREATE TABLE IF NOT EXISTS CUSTOMERS (%s, %s, %s, %s, %s, %s, %s, %s, %s);",
+                ID_FIELD, FIRST_NAME_FIELD, LAST_NAMES_FIELD, NATIONAL_ID_FIELD, ADDRESS_FIELD, EMAIL_FIELD,
+                PHONE_FIELD, COUNTRY_FIELD, PASSWORD_FIELD);
 
         stm.execute(createArtistSQL);
     }
 
     private void createInvoicesTable() throws Exception {
-        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY";
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
         final String BOOK_ID_FIELD = InvoicesSchema.BOOK_ID + " INT";
         final String AMOUNT_FIELD = InvoicesSchema.AMOUNT + " DECIMAL";
         final String DATE_FIELD = InvoicesSchema.DATE + " DATE";
         final String PAID_FIELD = InvoicesSchema.PAID + " BOOLEAN";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s);",
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS INVOICES (%s, %s, %s, %s, %s);",
                 ID_FIELD, BOOK_ID_FIELD, AMOUNT_FIELD, DATE_FIELD, PAID_FIELD);
+
+        stm.execute(createArtistSQL);
+    }
+
+    // You don't have an assigned room until you make the check-in
+    // So, when you book a room, you only will select the type and the amount of
+    // people
+    private void createRoomsPerBookTable() throws Exception {
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
+        final String BOOK_ID_FIELD = RoomsPerBookSchema.BOOK_ID + " INT";
+        final String ROOM_TYPE_FIELD = RoomsPerBookSchema.ROOM_TYPE + " VARCHAR(20)";
+        final String PEOPLE_NUM_FIELD = RoomsPerBookSchema.PEOPLE_NUM + " INT";
+        final String BREAKFAST_FIELD = RoomsPerBookSchema.BREAKFAST + " BOOLEAN";
+        final String LUNCH_FIELD = RoomsPerBookSchema.LUNCH + " BOOLEAN";
+        final String DINNER_FIELD = RoomsPerBookSchema.DINNER + " BOOLEAN";
+
+        Statement stm = Database.createStatement();
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS_PER_BOOK (%s, %s, %s, %s, %s, %s, %s);",
+                ID_FIELD, BOOK_ID_FIELD, ROOM_TYPE_FIELD, PEOPLE_NUM_FIELD, BREAKFAST_FIELD, LUNCH_FIELD, DINNER_FIELD);
+
+        stm.execute(createArtistSQL);
+    }
+
+    // You don't have an assigned room until you make the check-in
+    // So, when you book a room, you only will select the type and the amount of
+    // people
+    private void createCheckInsTable() throws Exception {
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
+        final String BOOK_ID_FIELD = CheckInsSchema.BOOK_ID + " INT";
+        final String DATE_FIELD = CheckInsSchema.DATE + " DATE";
+        final String ROOM_ID_FIELD = CheckInsSchema.ROOM_ID + " INT";
+        final String RECEPTIONIST_ID_FIELD = CheckInsSchema.RECEPTIONIST_ID + " INT";
+
+        Statement stm = Database.createStatement();
+
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS CHECK_INS (%s, %s, %s, %s, %s);",
+                ID_FIELD, BOOK_ID_FIELD, DATE_FIELD, ROOM_ID_FIELD, RECEPTIONIST_ID_FIELD);
+
+        stm.execute(createArtistSQL);
+    }
+
+    private void createInternalUsersTable() throws Exception {
+        final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
+        final String FIRST_NAME_FIELD = InternalUsersSchema.FIRST_NAME + " VARCHAR(20)";
+        final String LAST_NAMES_FIELD = InternalUsersSchema.LAST_NAMES + " VARCHAR(50)";
+        final String NATIONAL_ID_FIELD = InternalUsersSchema.NATIONAL_ID + " VARCHAR(20)";
+        final String PASSWORD_FIELD = InternalUsersSchema.PASSWORD + " VARCHAR(255)";
+
+        Statement stm = Database.createStatement();
+
+        String createArtistSQL = String.format(
+                "CREATE TABLE IF NOT EXISTS INTERNAL_USERS (%s, %s, %s, %s, %s);",
+                ID_FIELD, FIRST_NAME_FIELD, LAST_NAMES_FIELD, NATIONAL_ID_FIELD,
+                PASSWORD_FIELD);
 
         stm.execute(createArtistSQL);
     }
