@@ -3,7 +3,7 @@ package db.schemas;
 import java.util.Arrays;
 
 public enum BooksSchema {
-    CUSTOMER_ID, START_DATE, END_DATE, AMOUNT; // Amount is money
+    CUSTOMER_ID, START_DATE, END_DATE, AMOUNT, CANCELED; // Amount is money
 
     public static String[] toStringValues() {
         String[] result = new String[0];

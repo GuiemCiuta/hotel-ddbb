@@ -29,7 +29,6 @@ public class Setup {
 
     private void createRoomsTable() throws Exception {
         final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
-        final String NAME_FIELD = RoomsSchema.NAME + " VARCHAR(50)";
         final String PRICE_FIELD = RoomsSchema.PRICE + " DECIMAL";
         final String TYPE_FIELD = RoomsSchema.TYPE + " VARCHAR(20)";
         final String PEOPLE_CAPACITY_FIELD = RoomsSchema.PEOPLE_CAPACITY + " INT";
@@ -37,8 +36,8 @@ public class Setup {
         final String ROOM_NUM_FIELD = RoomsSchema.ROOM_NUM + " INT";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS (%s, %s, %s, %s, %s, %s, %s);",
-                ID_FIELD, NAME_FIELD, PRICE_FIELD, TYPE_FIELD, PEOPLE_CAPACITY_FIELD, FLOOR_FIELD, ROOM_NUM_FIELD);
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS (%s, %s, %s, %s, %s, %s);",
+                ID_FIELD, PRICE_FIELD, TYPE_FIELD, PEOPLE_CAPACITY_FIELD, FLOOR_FIELD, ROOM_NUM_FIELD);
 
         stm.execute(createArtistSQL);
     }
@@ -49,10 +48,11 @@ public class Setup {
         final String START_DATE_FIELD = BooksSchema.START_DATE + " DATE";
         final String END_DATE_FIELD = BooksSchema.END_DATE + " DATE";
         final String AMOUNT_FIELD = BooksSchema.AMOUNT + " DECIMAL(10,2)";
+        final String CANCELED_FIELD = BooksSchema.CANCELED + " BOOLEAN";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s);",
-                ID_FIELD, CUSTOMER_ID_FIELD, START_DATE_FIELD, END_DATE_FIELD, AMOUNT_FIELD);
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s, %s);",
+                ID_FIELD, CUSTOMER_ID_FIELD, START_DATE_FIELD, END_DATE_FIELD, AMOUNT_FIELD, CANCELED_FIELD);
 
         stm.execute(createArtistSQL);
     }
@@ -86,13 +86,12 @@ public class Setup {
     private void createInvoicesTable() throws Exception {
         final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
         final String BOOK_ID_FIELD = InvoicesSchema.BOOK_ID + " INT";
-        final String AMOUNT_FIELD = InvoicesSchema.AMOUNT + " DECIMAL";
         final String DATE_FIELD = InvoicesSchema.DATE + " DATE";
         final String PAID_FIELD = InvoicesSchema.PAID + " BOOLEAN";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS INVOICES (%s, %s, %s, %s, %s);",
-                ID_FIELD, BOOK_ID_FIELD, AMOUNT_FIELD, DATE_FIELD, PAID_FIELD);
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS INVOICES (%s, %s, %s, %s);",
+                ID_FIELD, BOOK_ID_FIELD, DATE_FIELD, PAID_FIELD);
 
         stm.execute(createArtistSQL);
     }
@@ -140,13 +139,14 @@ public class Setup {
         final String LAST_NAMES_FIELD = InternalUsersSchema.LAST_NAMES + " VARCHAR(50)";
         final String NATIONAL_ID_FIELD = InternalUsersSchema.NATIONAL_ID + " VARCHAR(20)";
         final String PASSWORD_FIELD = InternalUsersSchema.PASSWORD + " VARCHAR(255)";
+        final String ROLE_FIELD = InternalUsersSchema.ROLE + " VARCHAR(255)";
 
         Statement stm = Database.createStatement();
 
         String createArtistSQL = String.format(
-                "CREATE TABLE IF NOT EXISTS INTERNAL_USERS (%s, %s, %s, %s, %s);",
+                "CREATE TABLE IF NOT EXISTS INTERNAL_USERS (%s, %s, %s, %s, %s, %s);",
                 ID_FIELD, FIRST_NAME_FIELD, LAST_NAMES_FIELD, NATIONAL_ID_FIELD,
-                PASSWORD_FIELD);
+                PASSWORD_FIELD, ROLE_FIELD);
 
         stm.execute(createArtistSQL);
     }

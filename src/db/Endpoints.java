@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import javax.xml.crypto.Data;
 
+import db.schemas.RoomsSchema;
 import db.schemas.BooksSchema;
 import db.schemas.RoomsPerBookSchema;
 
@@ -44,7 +45,8 @@ public class Endpoints {
     }
 
     public static boolean makeReservation(int customerId, String startDate, String endDate, double amount,
-            String[] roomTypes, int[] peopleNums, boolean[] breakfastIncluded, boolean[] lunchIncluded, boolean[] dinnerIncluded) {
+            String[] roomTypes, int[] peopleNums, boolean[] breakfastIncluded, boolean[] lunchIncluded,
+            boolean[] dinnerIncluded) {
         try {
 
             String customerIdStr = Integer.toString(customerId);
@@ -57,12 +59,14 @@ public class Endpoints {
                             BooksSchema.START_DATE.toString(),
                             BooksSchema.END_DATE.toString(),
                             BooksSchema.AMOUNT.toString(),
+                            BooksSchema.CANCELED.toString(),
                     },
                     new String[] {
                             customerIdStr,
                             startDate,
                             endDate,
                             amountStr,
+                            "false"
                     });
 
             // Id of the current booking
@@ -97,9 +101,49 @@ public class Endpoints {
                                 peopleNumStr,
                                 Boolean.toString(breakfastIncluded[i]),
                                 Boolean.toString(lunchIncluded[i]),
-                                Boolean.toString(dinnerIncluded[i])
+                                Boolean.toString(dinnerIncluded[i]),
                         });
             }
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public static boolean cancelBook(int bookId) {
+        try {
+
+            Database.update("UPDATE BOOKS SET CANCELED = TRUE WHERE ID = " + bookId);
+
+            // FOR ROOMS
+            Database.update("UPDATE ROOMS_PER_BOOK SET CANCELED = TRUE WHERE BOOK_ID = " + bookId);
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public static boolean createRoom(double price, String type, String name, int floor, int roomNum,
+            int peopleCapacity) {
+        try {
+
+            String priceStr = Double.toString(price);
+            String floorStr = Integer.toString(floor);
+            String roomNumStr = Integer.toString(roomNum);
+            String peopleCapacityStr = Integer.toString(peopleCapacity);
+
+            Database.insertWithId("ROOMS",
+                    new String[] { RoomsSchema.PRICE.toString(), RoomsSchema.TYPE.toString(),
+                            RoomsSchema.NAME.toString(), RoomsSchema.FLOOR.toString(), RoomsSchema.ROOM_NUM.toString(),
+                            RoomsSchema.PEOPLE_CAPACITY.toString() },
+                            
+                    new String[]{priceStr, type, name, floorStr, roomNumStr, peopleCapacityStr});
 
             return true;
 

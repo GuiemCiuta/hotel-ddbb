@@ -316,7 +316,7 @@ public class Database {
         }
     }
 
-    public static ResultSet selectEmptyRooms(String roomType, String peopleNum) {
+    public static ResultSet selectEmptyRooms(String roomType, int peopleNum) {
         String query = "SELECT RPB.BOOK_ID, RPB.ROOM_TYPE, RPB.PEOPLE_NUM, B.END_DATE FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON B.ID = RPB.BOOK_ID WHERE RPB.ROOM_TYPE = %s AND RPB.PEOPLE_NUM = %s";
 
         query = String.format(query, roomType, peopleNum);
@@ -332,7 +332,22 @@ public class Database {
 
             return null;
         }
+    }
 
+    // As it may seem a generic function to make a sql query
+    // I'll use it for updating, so if I want to upgrade the function in the future, all updates come here.
+    public static boolean update(String query) {
+        try {
+
+            Statement stm = Database.createStatement();
+
+            return stm.execute(query);
+
+        } catch (Exception e) {
+            System.out.println(e);
+
+            return false;
+        }
     }
 
     // Copied from: https://stackoverflow.com/a/11009612
