@@ -316,16 +316,23 @@ public class Database {
         }
     }
 
-    public static ResultSet selectEmptyRooms(String roomType, int peopleNum) {
-        String query = "SELECT RPB.BOOK_ID, RPB.ROOM_TYPE, RPB.PEOPLE_NUM, B.END_DATE FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON B.ID = RPB.BOOK_ID WHERE RPB.ROOM_TYPE = %s AND RPB.PEOPLE_NUM = %s";
+    public static ResultSet countEmptyRooms(String roomType, int peopleNum, String fromDate, String toDate) {
+        //String query = "SELECT RPB.BOOK_ID, RPB.ROOM_TYPE, RPB.PEOPLE_NUM, B.END_DATE FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON B.ID = RPB.BOOK_ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM = %s";
+        String queryRooms = "SELECT COUNT(*) FROM ROOMS WHERE TYPE = '%s' AND PEOPLE_CAPACITY >= %s";
+        queryRooms = String.format(queryRooms, roomType, peopleNum);
 
-        query = String.format(query, roomType, peopleNum);
+        String queryBookedRooms = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM >= %s AND B.START_DATE >= '%s' AND B.END_DATE <= '%s'";
+
+        queryBookedRooms = String.format(queryBookedRooms, roomType, peopleNum, fromDate, toDate);
+
+        System.out.println(queryRooms);
+        System.out.println(queryBookedRooms);
 
         try {
 
             Statement stm = Database.createStatement();
 
-            return stm.executeQuery(query);
+            return stm.executeQuery(queryRooms);
 
         } catch (Exception e) {
             System.out.println(e);

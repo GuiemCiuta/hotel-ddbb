@@ -19,6 +19,7 @@ public class Setup {
             createCustomersTable();
             createInvoicesTable();
             createRoomsPerBookTable();
+            createPersonCheckinTable();
             createCheckInsTable();
             createInternalUsersTable();
 
@@ -29,6 +30,7 @@ public class Setup {
 
     private void createRoomsTable() throws Exception {
         final String ID_FIELD = "ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT";
+        final String NAME_FIELD = RoomsSchema.NAME + " VARCHAR(20)";
         final String PRICE_FIELD = RoomsSchema.PRICE + " DECIMAL";
         final String TYPE_FIELD = RoomsSchema.TYPE + " VARCHAR(20)";
         final String PEOPLE_CAPACITY_FIELD = RoomsSchema.PEOPLE_CAPACITY + " INT";
@@ -36,8 +38,8 @@ public class Setup {
         final String ROOM_NUM_FIELD = RoomsSchema.ROOM_NUM + " INT";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS (%s, %s, %s, %s, %s, %s);",
-                ID_FIELD, PRICE_FIELD, TYPE_FIELD, PEOPLE_CAPACITY_FIELD, FLOOR_FIELD, ROOM_NUM_FIELD);
+        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS (%s, %s, %s, %s, %s, %s, %s);",
+                ID_FIELD, PRICE_FIELD, NAME_FIELD, TYPE_FIELD, PEOPLE_CAPACITY_FIELD, FLOOR_FIELD, ROOM_NUM_FIELD);
 
         stm.execute(createArtistSQL);
     }
@@ -109,8 +111,21 @@ public class Setup {
         final String DINNER_FIELD = RoomsPerBookSchema.DINNER + " BOOLEAN";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS_PER_BOOK (%s, %s, %s, %s, %s, %s, %s);",
+        String createArtistSQL = String.format(
+                "CREATE TABLE IF NOT EXISTS ROOMS_PER_BOOK (%s, %s, %s, %s, %s, %s, %s);",
                 ID_FIELD, BOOK_ID_FIELD, ROOM_TYPE_FIELD, PEOPLE_NUM_FIELD, BREAKFAST_FIELD, LUNCH_FIELD, DINNER_FIELD);
+
+        stm.execute(createArtistSQL);
+    }
+
+    private void createPersonCheckinTable() throws Exception {
+        final String CHECKIN_ID_FIELD = PersonCheckin.CHECKIN_ID + " INT";
+        final String PERSON_NATIONAL_ID_FIELD = PersonCheckin.PERSON_NATIONAL_ID + " VARCHAR(20)";
+
+        Statement stm = Database.createStatement();
+        String createArtistSQL = String.format(
+                "CREATE TABLE IF NOT EXISTS PERSON_CHECKIN (%s, %s);",
+                CHECKIN_ID_FIELD, PERSON_NATIONAL_ID_FIELD);
 
         stm.execute(createArtistSQL);
     }
