@@ -5,6 +5,7 @@ import com.mysql.cj.util.Util;
 import db.Database;
 import db.Setup;
 import db.Utils;
+import ui.Reservation;
 import db.Endpoints;
 
 public class Test {
@@ -19,12 +20,14 @@ public class Test {
 
         //Endpoints.createRoom(56.4, "REGULAR", "Habitación Estándar", 2, 10, 2);
 
-        ResultSet rs = Database.countEmptyRooms("Standard", 2, "2024-01-06", "2024-02-18");
+       /*  ResultSet rs = Database.countEmptyRooms("Standard", 2, "2024-01-06", "2024-02-18");
 
         try {
             Utils.printResultSet(rs);
         } catch(Exception e) {
             System.out.println(e);
-        }
+        } */
+
+        new Reservation();
     }
 }
