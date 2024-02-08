@@ -49,6 +49,15 @@ public class Reservation {
         InputWLabel formDateInput = new InputWLabel("From date", fromDatePicker);
         formPanel.add(formDateInput.getPanel());
 
+        JCheckBox breakfastCheckbox = new JCheckBox("Breakfast");
+        formPanel.add(breakfastCheckbox);
+
+        JCheckBox lunchCheckbox = new JCheckBox("Lunch");
+        formPanel.add(lunchCheckbox);
+
+        JCheckBox dinnerCheckbox = new JCheckBox("Dinner");
+        formPanel.add(dinnerCheckbox);
+
 
 
         frame.add(formPanel);
