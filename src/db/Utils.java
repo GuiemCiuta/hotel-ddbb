@@ -1,8 +1,10 @@
 package db;
 
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class Utils {
     // Wraps with quotation marks the string
@@ -60,5 +62,10 @@ public class Utils {
         } catch (Exception e) {
 
         }
+    }
+
+    public static String convertDateToString(Date date) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        return df.format(date);
     }
 }
