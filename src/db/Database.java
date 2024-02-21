@@ -316,33 +316,81 @@ public class Database {
         }
     }
 
-    public static ResultSet countEmptyRooms(String roomType, int peopleNum, String fromDate, String toDate) {
-        //String query = "SELECT RPB.BOOK_ID, RPB.ROOM_TYPE, RPB.PEOPLE_NUM, B.END_DATE FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON B.ID = RPB.BOOK_ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM = %s";
-        String queryRooms = "SELECT COUNT(*) FROM ROOMS WHERE TYPE = '%s' AND PEOPLE_CAPACITY >= %s";
-        queryRooms = String.format(queryRooms, roomType, peopleNum);
+    // A function to get the results of a SQL query that must return only a count
+    // statement
+    private static int getCountSQLQuery(String query, Statement stm) {
+        try {
+            ResultSet rs = stm.executeQuery(query);
 
-        String queryBookedRooms = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM >= %s AND B.START_DATE >= '%s' AND B.END_DATE <= '%s'";
+            rs.next();
+            return rs.getInt(1);
+        } catch (Exception e) {
+            System.out.println(e);
+            return -1;
+        }
+    }
 
-        queryBookedRooms = String.format(queryBookedRooms, roomType, peopleNum, fromDate, toDate);
+    // This is an execution of my own-thought algorithm explained here:
+    // https://docs.google.com/spreadsheets/d/1XhjKQmlR5vyI1FQuQbWoZWFiyaxVoEvPA8Ty8Cs4s4Q/edit?pli=1#gid=0
+    public static void countEmptyRooms(String roomType, int peopleNum, String fromDate, String toDate) {
 
-        System.out.println(queryRooms);
-        System.out.println(queryBookedRooms);
+        String lowerCapacityRoomsSQL = "SELECT COUNT(*) FROM ROOMS WHERE TYPE = '%s' AND PEOPLE_CAPACITY < %s";
+        lowerCapacityRoomsSQL = String.format(lowerCapacityRoomsSQL, roomType, peopleNum);
+
+        String sameOrHigherCapacityRoomsSQL = "SELECT COUNT(*) FROM ROOMS WHERE TYPE = '%s' AND PEOPLE_CAPACITY >= %s";
+        sameOrHigherCapacityRoomsSQL = String.format(sameOrHigherCapacityRoomsSQL, roomType, peopleNum);
+
+        String lowerCapacityBooksSQL = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM < %s AND B.START_DATE >= '%s' AND B.END_DATE <= '%s'";
+        lowerCapacityBooksSQL = String.format(lowerCapacityBooksSQL, roomType, peopleNum, fromDate, toDate);
+        String sameOrHigherCapacityBooksSQL = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM = %s AND B.START_DATE >= '%s' AND B.END_DATE <= '%s'";
+        sameOrHigherCapacityBooksSQL = String.format(sameOrHigherCapacityBooksSQL, roomType, peopleNum, fromDate,
+                toDate);
 
         try {
 
+            int lowerCapacityBooks, lowerCapacityRooms;
+            int sameOrHigherCapacityBooks, sameOrHigherCapacityRooms;
+            int lowerCapacityOverflow;
+            int finalResult;
+
             Statement stm = Database.createStatement();
 
-            return stm.executeQuery(queryRooms);
+            // Calculate the amount of empty (and valid) rooms for the current reservation.
+
+            // Get all the necessary data to make the calculus
+            lowerCapacityBooks = getCountSQLQuery(lowerCapacityBooksSQL, stm);
+            lowerCapacityRooms = getCountSQLQuery(lowerCapacityRoomsSQL, stm);
+            sameOrHigherCapacityBooks = getCountSQLQuery(sameOrHigherCapacityBooksSQL, stm);
+            sameOrHigherCapacityRooms = getCountSQLQuery(sameOrHigherCapacityRoomsSQL, stm);
+
+            // All the overflow books must be placed into rooms that could be valid for our
+            // current reservation
+            lowerCapacityOverflow = lowerCapacityBooks - lowerCapacityRooms;
+            // It must filter negative results, they're not useful (explained in the algo)
+            if (lowerCapacityOverflow < 0) {
+                lowerCapacityOverflow = 0;
+            }
+
+            // The final result will be the amount of valid rooms, substracting all the
+            // already booked rooms, and also substracting the overflow from lower rooms.
+
+            System.out.println(sameOrHigherCapacityRooms);
+            System.out.println(sameOrHigherCapacityBooks);
+            System.out.println(lowerCapacityOverflow);
+
+            finalResult = sameOrHigherCapacityRooms - sameOrHigherCapacityBooks - lowerCapacityOverflow;
+
+            System.out.println(finalResult);
 
         } catch (Exception e) {
             System.out.println(e);
 
-            return null;
         }
     }
 
     // As it may seem a generic function to make a sql query
-    // I'll use it for updating, so if I want to upgrade the function in the future, all updates come here.
+    // I'll use it for updating, so if I want to upgrade the function in the future,
+    // all updates come here.
     public static boolean update(String query) {
         try {
 

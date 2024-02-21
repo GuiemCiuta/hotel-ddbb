@@ -38,10 +38,10 @@ public class Setup {
         final String ROOM_NUM_FIELD = RoomsSchema.ROOM_NUM + " INT";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS (%s, %s, %s, %s, %s, %s, %s);",
+        String createRoomsTableSQL = String.format("CREATE TABLE IF NOT EXISTS ROOMS (%s, %s, %s, %s, %s, %s, %s);",
                 ID_FIELD, PRICE_FIELD, NAME_FIELD, TYPE_FIELD, PEOPLE_CAPACITY_FIELD, FLOOR_FIELD, ROOM_NUM_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createRoomsTableSQL);
     }
 
     private void createBooksTable() throws Exception {
@@ -53,10 +53,10 @@ public class Setup {
         final String CANCELED_FIELD = BooksSchema.CANCELED + " BOOLEAN";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s, %s);",
+        String createBooksTableSQL = String.format("CREATE TABLE IF NOT EXISTS BOOKS (%s, %s, %s, %s, %s, %s);",
                 ID_FIELD, CUSTOMER_ID_FIELD, START_DATE_FIELD, END_DATE_FIELD, AMOUNT_FIELD, CANCELED_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createBooksTableSQL);
     }
 
     private void createCustomersTable() throws Exception {
@@ -77,12 +77,12 @@ public class Setup {
                                                                                   // Our passwords will be stored after
                                                                                   // a sha256 hash
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format(
+        String createCustomersTableSQL = String.format(
                 "CREATE TABLE IF NOT EXISTS CUSTOMERS (%s, %s, %s, %s, %s, %s, %s, %s, %s);",
                 ID_FIELD, FIRST_NAME_FIELD, LAST_NAMES_FIELD, NATIONAL_ID_FIELD, ADDRESS_FIELD, EMAIL_FIELD,
                 PHONE_FIELD, COUNTRY_FIELD, PASSWORD_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createCustomersTableSQL);
     }
 
     private void createInvoicesTable() throws Exception {
@@ -92,10 +92,10 @@ public class Setup {
         final String PAID_FIELD = InvoicesSchema.PAID + " BOOLEAN";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS INVOICES (%s, %s, %s, %s);",
+        String createInvoicesTableSQL = String.format("CREATE TABLE IF NOT EXISTS INVOICES (%s, %s, %s, %s);",
                 ID_FIELD, BOOK_ID_FIELD, DATE_FIELD, PAID_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createInvoicesTableSQL);
     }
 
     // You don't have an assigned room until you make the check-in
@@ -111,11 +111,11 @@ public class Setup {
         final String DINNER_FIELD = RoomsPerBookSchema.DINNER + " BOOLEAN";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format(
+        String createRoomsPerBookTableSQL = String.format(
                 "CREATE TABLE IF NOT EXISTS ROOMS_PER_BOOK (%s, %s, %s, %s, %s, %s, %s);",
                 ID_FIELD, BOOK_ID_FIELD, ROOM_TYPE_FIELD, PEOPLE_NUM_FIELD, BREAKFAST_FIELD, LUNCH_FIELD, DINNER_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createRoomsPerBookTableSQL);
     }
 
     private void createPersonCheckinTable() throws Exception {
@@ -123,11 +123,11 @@ public class Setup {
         final String PERSON_NATIONAL_ID_FIELD = PersonCheckin.PERSON_NATIONAL_ID + " VARCHAR(20)";
 
         Statement stm = Database.createStatement();
-        String createArtistSQL = String.format(
+        String createPersonCheckinSQL = String.format(
                 "CREATE TABLE IF NOT EXISTS PERSON_CHECKIN (%s, %s);",
                 CHECKIN_ID_FIELD, PERSON_NATIONAL_ID_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createPersonCheckinSQL);
     }
 
     // You don't have an assigned room until you make the check-in
@@ -142,10 +142,10 @@ public class Setup {
 
         Statement stm = Database.createStatement();
 
-        String createArtistSQL = String.format("CREATE TABLE IF NOT EXISTS CHECK_INS (%s, %s, %s, %s, %s);",
+        String createCheckInsTableSQL = String.format("CREATE TABLE IF NOT EXISTS CHECK_INS (%s, %s, %s, %s, %s);",
                 ID_FIELD, BOOK_ID_FIELD, DATE_FIELD, ROOM_ID_FIELD, RECEPTIONIST_ID_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createCheckInsTableSQL);
     }
 
     private void createInternalUsersTable() throws Exception {
@@ -158,11 +158,11 @@ public class Setup {
 
         Statement stm = Database.createStatement();
 
-        String createArtistSQL = String.format(
+        String createInternalUsersTableSQL = String.format(
                 "CREATE TABLE IF NOT EXISTS INTERNAL_USERS (%s, %s, %s, %s, %s, %s);",
                 ID_FIELD, FIRST_NAME_FIELD, LAST_NAMES_FIELD, NATIONAL_ID_FIELD,
                 PASSWORD_FIELD, ROLE_FIELD);
 
-        stm.execute(createArtistSQL);
+        stm.execute(createInternalUsersTableSQL);
     }
 }

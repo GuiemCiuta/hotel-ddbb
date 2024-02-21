@@ -13,21 +13,26 @@ public class Test {
         Setup setup = new Setup();
 
         /* Endpoints.makeReservation(10,
-        "2024-02-10", "2024-02-16", 160.4,
-        new String[]{"Suite", "Standard"}, new int[]{2, 3}, new boolean[]{true, true}, new boolean[]{false, false}, new boolean[]{true, false}); */
+                "2024-02-10", "2024-02-16", 160.4,
+                new String[] { "REGULAR", "REGULAR", "REGULAR", "REGULAR", "REGULAR" },
+                new int[] { 2, 2, 1, 2, 1 },
+                new boolean[] { true, true, true, true, true },
+                new boolean[] { true, true, true, true, true }, new boolean[] { true, true, true, true, true }); */
 
-        //Endpoints.cancelBook(3);
+        // Endpoints.cancelBook(3);
 
-        //Endpoints.createRoom(56.4, "REGULAR", "Habitación Estándar", 2, 10, 2);
+        // Endpoints.createRoom(56.4, "REGULAR", "Habitación Estándar", 2, 10, 2);
 
-       /*  ResultSet rs = Database.countEmptyRooms("Standard", 2, "2024-01-06", "2024-02-18");
+        Database.countEmptyRooms("REGULAR", 2, "2024-01-06", "2024-02-18");
 
-        try {
-            Utils.printResultSet(rs);
-        } catch(Exception e) {
-            System.out.println(e);
-        } */
+        /*
+         * try {
+         * Utils.printResultSet(rs);
+         * } catch(Exception e) {
+         * System.out.println(e);
+         * }
+         */
 
-        new Reservation();
+        // new Reservation();
     }
 }

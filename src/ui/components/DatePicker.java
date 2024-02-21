@@ -9,7 +9,7 @@ import org.jdatepicker.impl.UtilDateModel;
 public class DatePicker {
     public static JDatePickerImpl createDP() {
         Properties p = new Properties();
-        p.put("text.today", "Today");
+        p.put("text.today", "Day");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
         UtilDateModel model = new UtilDateModel();

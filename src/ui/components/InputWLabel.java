@@ -9,24 +9,16 @@ import ui.components.Components;
 import java.awt.*;
 
 // Creates the layout for an input and its label
-public class InputWLabel {
-    private JPanel panel;
+public class InputWLabel extends JPanel {
 
     public InputWLabel(String labelStr, JComponent input) {
-        panel = new JPanel();
 
+        this.setLayout(new FlowLayout());
         JLabel label = new JLabel(labelStr);
-        panel.add(label);
-        panel.add(input);
-    }
-
-
-
-    /**
-     * @return JPanel return the panel
-     */
-    public JPanel getPanel() {
-        return panel;
+        //label.setBounds(0, 0, 200, 30);
+        this.add(label);
+        //input.setBounds(0, 30, 200, 50);
+        this.add(input);
     }
 
 }
