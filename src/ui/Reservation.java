@@ -48,7 +48,9 @@ public class Reservation {
 
             System.out.println(roomType + " " + peopleNum + " " + fromDateStr + " " + toDateStr);
 
-            Database.countEmptyRooms(roomType, peopleNum, fromDateStr, toDateStr);
+            int availableRooms = Database.countEmptyRooms(roomType, peopleNum, fromDateStr, toDateStr);
+
+            System.out.println(availableRooms);
 
         } catch (WrongDatesException err) {
 

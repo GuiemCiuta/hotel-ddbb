@@ -332,7 +332,7 @@ public class Database {
 
     // This is an execution of my own-thought algorithm explained here:
     // https://docs.google.com/spreadsheets/d/1XhjKQmlR5vyI1FQuQbWoZWFiyaxVoEvPA8Ty8Cs4s4Q/edit?pli=1#gid=0
-    public static void countEmptyRooms(String roomType, int peopleNum, String fromDate, String toDate) {
+    public static int countEmptyRooms(String roomType, int peopleNum, String fromDate, String toDate) {
 
         String lowerCapacityRoomsSQL = "SELECT COUNT(*) FROM ROOMS WHERE TYPE = '%s' AND PEOPLE_CAPACITY < %s";
         lowerCapacityRoomsSQL = String.format(lowerCapacityRoomsSQL, roomType, peopleNum);
@@ -340,11 +340,20 @@ public class Database {
         String sameOrHigherCapacityRoomsSQL = "SELECT COUNT(*) FROM ROOMS WHERE TYPE = '%s' AND PEOPLE_CAPACITY >= %s";
         sameOrHigherCapacityRoomsSQL = String.format(sameOrHigherCapacityRoomsSQL, roomType, peopleNum);
 
-        String lowerCapacityBooksSQL = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM < %s AND B.START_DATE >= '%s' AND B.END_DATE <= '%s'";
-        lowerCapacityBooksSQL = String.format(lowerCapacityBooksSQL, roomType, peopleNum, fromDate, toDate);
-        String sameOrHigherCapacityBooksSQL = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM = %s AND B.START_DATE >= '%s' AND B.END_DATE <= '%s'";
-        sameOrHigherCapacityBooksSQL = String.format(sameOrHigherCapacityBooksSQL, roomType, peopleNum, fromDate,
-                toDate);
+        // To make the date fit, it must meet one of these two conditions (they're
+        // negative, so query MUST NOT meet any of them)
+        String dateCondition1 = "B.START_DATE >= '%s' AND B.END_DATE >= '%s' AND B.START_DATE >= '%s' AND B.END_DATE >= '%s'";
+        dateCondition1 = String.format(dateCondition1, fromDate, fromDate, toDate, toDate);
+
+        String dateCondition2 = "B.START_DATE <= '%s' AND B.END_DATE <= '%s' AND B.START_DATE <= '%s' AND B.END_DATE <= '%s'";
+        dateCondition2 = String.format(dateCondition2, fromDate, fromDate, toDate, toDate);
+
+        String lowerCapacityBooksSQL = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM < %s AND NOT (%s OR %s)";
+        lowerCapacityBooksSQL = String.format(lowerCapacityBooksSQL, roomType, peopleNum, dateCondition1,
+                dateCondition2);
+        String sameOrHigherCapacityBooksSQL = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM >= %s AND NOT (%s OR %s)";
+        sameOrHigherCapacityBooksSQL = String.format(sameOrHigherCapacityBooksSQL, roomType, peopleNum, dateCondition1,
+                dateCondition2);
 
         try {
 
@@ -382,9 +391,12 @@ public class Database {
 
             System.out.println(finalResult);
 
+            return finalResult;
+
         } catch (Exception e) {
             System.out.println(e);
 
+            return 0;
         }
     }
 
