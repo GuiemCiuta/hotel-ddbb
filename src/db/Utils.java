@@ -68,4 +68,8 @@ public class Utils {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         return df.format(date);
     }
+
+    public static String getExecutionPath() {
+        return System.getProperty("user.dir");
+    }
 }

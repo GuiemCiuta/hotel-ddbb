@@ -1,4 +1,9 @@
+import java.sql.Date;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import com.mysql.cj.util.Util;
 
@@ -13,17 +18,18 @@ public class Test {
         Setup setup = new Setup();
 
         /* Endpoints.makeReservation(10,
-                "2024-02-10", "2024-02-16", 160.4,
-                new String[] { "REGULAR", "REGULAR", "REGULAR", "REGULAR", "REGULAR" },
-                new int[] { 2, 2, 1, 2, 1 },
-                new boolean[] { true, true, true, true, true },
-                new boolean[] { true, true, true, true, true }, new boolean[] { true, true, true, true, true }); */
+                "2024-02-10",
+                "2024-02-16",
+                "REGULAR",
+                2,
+                true,
+                true, true); */
 
         // Endpoints.cancelBook(3);
 
         // Endpoints.createRoom(56.4, "REGULAR", "Habitación Estándar", 2, 10, 2);
 
-        //Database.countEmptyRooms("REGULAR", 2, "2024-02-12", "2024-02-15");
+        // Database.countEmptyRooms("REGULAR", 2, "2024-02-12", "2024-02-15");
 
         /*
          * try {

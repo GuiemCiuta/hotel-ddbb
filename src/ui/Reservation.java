@@ -11,14 +11,19 @@ import org.jdatepicker.impl.UtilDateModel;
 import com.mysql.cj.protocol.a.PacketSplitter;
 
 import db.Database;
+import db.Endpoints;
 import db.Utils;
+import exceptions.NoAvailableRoomsException;
 import exceptions.WrongDatesException;
 import ui.components.Components;
 import ui.components.DatePicker;
+import ui.components.Img;
 import ui.components.InputWLabel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Reservation {
@@ -28,48 +33,9 @@ public class Reservation {
     private JDatePickerImpl fromDatePicker, toDatePicker;
     private JCheckBox breakfastCheckbox, lunchCheckbox, dinnerCheckbox;
 
-    private void searchBooks(ActionEvent e) {
-        try {
+    private final static String[] ROOM_TYPES = { "Regular", "Suite" };
 
-            String roomType = roomTypeSelector.getSelectedItem().toString();
-            int peopleNum = Integer.valueOf(peopleNumTextField.getText());
-            Date fromDate = (Date) fromDatePicker.getModel().getValue();
-            Date toDate = (Date) toDatePicker.getModel().getValue();
-
-            // Check that the "to date" is later than "from date"
-            // Idk why compareTo method gives the second date later even if they're equal.
-            // I've found this solution...
-            if (fromDate.compareTo(toDate) > 0 || fromDate.toString().equals(toDate.toString())) {
-                throw new WrongDatesException();
-            }
-
-            String fromDateStr = Utils.convertDateToString(fromDate);
-            String toDateStr = Utils.convertDateToString(toDate);
-
-            System.out.println(roomType + " " + peopleNum + " " + fromDateStr + " " + toDateStr);
-
-            int availableRooms = Database.countEmptyRooms(roomType, peopleNum, fromDateStr, toDateStr);
-
-            System.out.println(availableRooms);
-
-        } catch (WrongDatesException err) {
-
-            UIManager.getIcon("OptionPane.warningIcon");
-            JOptionPane.showMessageDialog(frame, err.getMessage(), "Error", 2);
-
-        } catch (NullPointerException | NumberFormatException err) {
-
-            UIManager.getIcon("OptionPane.warningIcon");
-            JOptionPane.showMessageDialog(frame, "Please fill up all the fields to search.", "Error", 2);
-
-        } catch (Exception err) {
-
-            UIManager.getIcon("OptionPane.warningIcon");
-            JOptionPane.showMessageDialog(frame, "Unexpected error occurred", "Error", 2);
-
-        }
-    }
-
+    // https://stackoverflow.com/questions/1385737/scrollable-jpanel
     public Reservation() {
         // Create the frame
         frame = new JFrame();
@@ -78,7 +44,6 @@ public class Reservation {
         GridLayout mainLayout = new GridLayout(10, 3, 10, 10);
         // frame.setLayout(mainLayout);
         frame.setSize(1000, 700);
-        frame.setBackground(new Color(0, 255, 0));
 
         // Add title
         JLabel pageH1 = Components.createH1("Hotelsa Booking");
@@ -93,19 +58,10 @@ public class Reservation {
         formPanel.setSize(1000, 700);
         formPanel.setLayout(null);
 
-        // Room type input
-        String[] roomTypes = { "Regular", "Suite" };
-
-        this.roomTypeSelector = new JComboBox(roomTypes);
-        InputWLabel roomTypeInput = new InputWLabel("Room Type", roomTypeSelector);
-        roomTypeInput.setBounds(50, 70, 95, 60);
-        formPanel.add(roomTypeInput);
-
-        this.peopleNumTextField = new JTextField();
-        peopleNumTextField.setColumns(3);
-        InputWLabel peopleNumInput = new InputWLabel("Number of People", peopleNumTextField);
-        peopleNumInput.setBounds(150, 70, 150, 60);
-        formPanel.add(peopleNumInput);
+        JPanel roomsWrapper = new JPanel();
+        roomsWrapper.setBounds(50, 60, 400, 90);
+        this.addRoom(roomsWrapper);
+        formPanel.add(roomsWrapper);
 
         this.fromDatePicker = DatePicker.createDP();
         InputWLabel fromDateInput = new InputWLabel("From date", fromDatePicker);
@@ -134,6 +90,12 @@ public class Reservation {
         searchButton.setBounds(50, 350, 100, 50);
         formPanel.add(searchButton);
 
+        Img roomPic = new Img(
+                "hotel.jpg");
+        roomPic.setBounds(550, 100, 600, 400);
+        frame.add(roomPic);
+        roomPic.repaint();
+
         frame.add(formPanel);
 
         // Display everything
@@ -141,5 +103,94 @@ public class Reservation {
         frame.setSize(Init.VP_WIDTH, Init.VP_HEIGHT);
         frame.setVisible(true);
 
+    }
+
+    // To sell more, if there are so few rooms left, we'll motivate user to book
+    private void createFomo(int roomsNum) {
+        UIManager.getIcon("OptionPane.warningIcon");
+        JOptionPane.showMessageDialog(frame, "Hurry up! There are only " + roomsNum + " rooms left.", "Info", 2);
+    }
+
+    private void searchBooks(ActionEvent e) {
+        try {
+
+            String roomType = roomTypeSelector.getSelectedItem().toString();
+            int peopleNum = Integer.valueOf(peopleNumTextField.getText());
+            Date fromDate = (Date) fromDatePicker.getModel().getValue();
+            Date toDate = (Date) toDatePicker.getModel().getValue();
+
+            // Check that the "to date" is later than "from date"
+            // Idk why compareTo method gives the second date later even if they're equal.
+            // I've found this solution...
+            if (fromDate.compareTo(toDate) > 0 || fromDate.toString().equals(toDate.toString())) {
+                throw new WrongDatesException();
+            }
+
+
+            System.out.println(roomType + " " + peopleNum + " " + fromDate + " " + toDate);
+
+            int availableRooms = Database.countEmptyRooms(roomType, peopleNum, fromDate.toString(), toDate.toString());
+
+            if (availableRooms < 1) {
+                throw new NoAvailableRoomsException();
+            }
+
+            // If so few rooms left, we'll remove buying friction using an old but gold
+            // technique
+            if (availableRooms <= 3) {
+                this.createFomo(availableRooms);
+            }
+
+            
+
+
+            // If rooms available, let's add a button to book a room
+            JButton bookButton = new JButton("Book room!");
+            bookButton.setBounds(50, 410, 200, 50);
+            bookButton.addActionListener(evt -> Endpoints.makeReservation(0, fromDate, toDate, roomType,
+                    peopleNum, breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
+                    breakfastCheckbox.isSelected()));
+            frame.add(bookButton);
+            bookButton.repaint();
+
+        } catch (NoAvailableRoomsException err) {
+
+            UIManager.getIcon("OptionPane.warningIcon");
+            JOptionPane.showMessageDialog(frame, err, "Info", 2);
+
+        } catch (WrongDatesException err) {
+
+            UIManager.getIcon("OptionPane.warningIcon");
+            JOptionPane.showMessageDialog(frame, err.getMessage(), "Error", 2);
+
+        } catch (NullPointerException | NumberFormatException err) {
+
+            UIManager.getIcon("OptionPane.warningIcon");
+            JOptionPane.showMessageDialog(frame, "Please fill up all the fields to search.", "Error", 2);
+
+        } catch (Exception err) {
+
+            UIManager.getIcon("OptionPane.warningIcon");
+            JOptionPane.showMessageDialog(frame, "Unexpected error occurred", "Error", 2);
+
+        }
+
+    }
+
+    private void addRoom(JPanel panel) {
+        this.roomTypeSelector = new JComboBox(Reservation.ROOM_TYPES);
+        InputWLabel roomTypeInput = new InputWLabel("Room Type", roomTypeSelector);
+        roomTypeInput.setBounds(0, 0, 100, 40);
+        panel.add(roomTypeInput);
+
+        this.peopleNumTextField = new JTextField();
+        peopleNumTextField.setColumns(3);
+        InputWLabel peopleNumInput = new InputWLabel("Number of People", peopleNumTextField);
+        peopleNumInput.setBounds(10, 10, 50, 100);
+        panel.add(peopleNumInput);
+    }
+
+    private void makeReservation(String startDate, String endDate, int[] peopleNums) {
+        //Endpoints.makeReservation(0, startDate, endDate, 0, ROOM_TYPES, peopleNums, null, null, null);
     }
 }

@@ -5,6 +5,12 @@ import java.sql.*;
 import db.schemas.*;
 
 public class Setup {
+    // The order is the following: Standard rooms, Suite rooms
+    public static double[] ROOMS_PRICE = new double[] { 70, 120 };
+
+    // The order is the most logical one: breakfast, lunch & dinner
+    public static double[] MEALS_PRICES = new double[] {7.5, 10.5, 10.5};
+
     // Constructor
     public Setup() {
         createTables();
