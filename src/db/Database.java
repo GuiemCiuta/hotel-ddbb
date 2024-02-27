@@ -380,6 +380,11 @@ public class Database {
                 lowerCapacityOverflow = 0;
             }
 
+            // It must filter negative results, they're not useful (explained in the algo)
+            if (sameOrHigherCapacityBooks < 0) {
+                sameOrHigherCapacityBooks = 0;
+            }
+
             // The final result will be the amount of valid rooms, substracting all the
             // already booked rooms, and also substracting the overflow from lower rooms.
 
