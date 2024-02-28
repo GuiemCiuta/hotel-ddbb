@@ -16,6 +16,7 @@ import javax.xml.crypto.Data;
 
 import db.schemas.RoomsSchema;
 import db.schemas.BooksSchema;
+import db.schemas.InvoicesSchema;
 import db.schemas.RoomsPerBookSchema;
 
 public class Endpoints {
@@ -133,29 +134,9 @@ public class Endpoints {
             String roomType, int peopleNum, boolean breakfastIncluded, boolean lunchIncluded,
             boolean dinnerIncluded) {
         try {
-            // Parse dates
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
-            LocalDate startDate = LocalDate.parse(startDateString, formatter);
-            LocalDate endDate = LocalDate.parse(endDateString, formatter);
-
-            int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
-            // Booking a room for two people should be more expensive
-            // The multiplier for booking for one person will be 1, for 2, it'll be 1.5, for
-            // 3, it'll be 2 and so on
-            double peopleNumMultiplier = 0.5 + peopleNum / 2;
-
-            // Calculate each meal price, depending if it's selected or not
-            double breakfastAmount = breakfastIncluded ? Setup.MEALS_PRICES[0] * peopleNum : 0;
-            double lunchAmount = lunchIncluded ? Setup.MEALS_PRICES[1] * peopleNum : 0;
-            double dinnerAmount = dinnerIncluded ? Setup.MEALS_PRICES[2] * peopleNum : 0;
-            double mealsPrice = breakfastAmount + lunchAmount + dinnerAmount;
-
-            // Calculate the total amount
-            double amount = days * (Setup.ROOMS_PRICE[0] * peopleNumMultiplier + mealsPrice);
-
-            System.out.println("days: " + days);
-            System.out.println("amount: " + amount);
+            double amount = Endpoints.calculatePrice(startDateString, endDateString, roomType, peopleNum,
+                    breakfastIncluded, lunchIncluded, dinnerIncluded);
 
             String customerIdStr = Integer.toString(customerId);
             String amountStr = Double.toString(amount);
@@ -171,8 +152,8 @@ public class Endpoints {
                     },
                     new String[] {
                             customerIdStr,
-                            startDate.toString(),
-                            endDate.toString(),
+                            startDateString,
+                            endDateString,
                             amountStr,
                             "false"
                     });
@@ -208,6 +189,9 @@ public class Endpoints {
                             Boolean.toString(lunchIncluded),
                             Boolean.toString(dinnerIncluded),
                     });
+
+            // Store onvoice of the booking
+            Endpoints.createInvoice(bookingId);
 
             return true;
 
@@ -246,6 +230,48 @@ public class Endpoints {
         }
     }
 
+    public static double calculatePrice(String startDateString, String endDateString,
+            String roomType, int peopleNum, boolean breakfastIncluded, boolean lunchIncluded,
+            boolean dinnerIncluded) {
+
+        // Parse dates
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+
+        LocalDate startDate = LocalDate.parse(startDateString, formatter);
+        LocalDate endDate = LocalDate.parse(endDateString, formatter);
+
+        int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
+        // Booking a room for two people should be more expensive
+        // The multiplier for booking for one person will be 1, for 2, it'll be 1.5, for
+        // 3, it'll be 2 and so on
+        double peopleNumMultiplier = 0.5 + peopleNum / 2;
+
+        // Calculate each meal price, depending if it's selected or not
+        double breakfastAmount = breakfastIncluded ? Setup.MEALS_PRICES[0] * peopleNum : 0;
+        double lunchAmount = lunchIncluded ? Setup.MEALS_PRICES[1] * peopleNum : 0;
+        double dinnerAmount = dinnerIncluded ? Setup.MEALS_PRICES[2] * peopleNum : 0;
+        double mealsPrice = breakfastAmount + lunchAmount + dinnerAmount;
+
+        // Calculate the price per night of the room depending on room type
+        double roomPrice = roomType.toUpperCase().equals("REGULAR") ? Setup.ROOMS_PRICE[0] : Setup.ROOMS_PRICE[1];
+
+        // Calculate the total amount
+        return days * (roomPrice * peopleNumMultiplier + mealsPrice);
+    }
+
+    public static double calculatePrice(java.util.Date startDate, java.util.Date endDate,
+            String roomType, int peopleNum, boolean breakfastIncluded, boolean lunchIncluded,
+            boolean dinnerIncluded) {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fromDateStr = dateFormat.format(startDate);
+        String toDateStr = dateFormat.format(endDate);
+
+        return Endpoints.calculatePrice(fromDateStr, toDateStr, roomType, peopleNum, breakfastIncluded, lunchIncluded,
+                dinnerIncluded);
+
+    }
+
     public static boolean createRoom(double price, String type, String name, int floor, int roomNum,
             int peopleCapacity) {
         try {
@@ -261,6 +287,28 @@ public class Endpoints {
                             RoomsSchema.PEOPLE_CAPACITY.toString() },
 
                     new String[] { priceStr, type, name, floorStr, roomNumStr, peopleCapacityStr });
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    public static boolean createInvoice(int bookId) {
+        try {
+
+            // Create today date (invoice will be created with this date by default)
+            LocalDate today = LocalDate.now();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String dateStr = df.format(today);
+
+            Database.insertWithId("INVOICES",
+                    new String[] { InvoicesSchema.BOOK_ID.toString(), InvoicesSchema.DATE.toString(),
+                            InvoicesSchema.PAID.toString() },
+
+                    new String[] { Integer.toString(bookId), dateStr, "false" });
 
             return true;
 

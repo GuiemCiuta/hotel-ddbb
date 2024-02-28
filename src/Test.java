@@ -27,7 +27,7 @@ public class Test {
 
         // Endpoints.cancelBook(3);
 
-        // Endpoints.createRoom(56.4, "REGULAR", "Habitación Estándar", 2, 10, 2);
+        //Endpoints.createRoom(56.4, "SUITE", "Suite de lujo", 20, 1, 2);
 
         // Database.countEmptyRooms("REGULAR", 2, "2024-02-12", "2024-02-15");
 

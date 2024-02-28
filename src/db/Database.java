@@ -2,6 +2,8 @@ package db;
 
 import java.security.MessageDigest;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import db.schemas.BooksSchema;
 
@@ -332,7 +334,11 @@ public class Database {
 
     // This is an execution of my own-thought algorithm explained here:
     // https://docs.google.com/spreadsheets/d/1XhjKQmlR5vyI1FQuQbWoZWFiyaxVoEvPA8Ty8Cs4s4Q/edit?pli=1#gid=0
-    public static int countEmptyRooms(String roomType, int peopleNum, String fromDate, String toDate) {
+    public static int countEmptyRooms(String roomType, int peopleNum, java.util.Date fromDate, java.util.Date toDate) {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fromDateStr = dateFormat.format(fromDate);
+        String toDateStr = dateFormat.format(toDate);
 
         String lowerCapacityRoomsSQL = "SELECT COUNT(*) FROM ROOMS WHERE TYPE = '%s' AND PEOPLE_CAPACITY < %s";
         lowerCapacityRoomsSQL = String.format(lowerCapacityRoomsSQL, roomType, peopleNum);
@@ -343,10 +349,10 @@ public class Database {
         // To make the date fit, it must meet one of these two conditions (they're
         // negative, so query MUST NOT meet any of them)
         String dateCondition1 = "B.START_DATE >= '%s' AND B.END_DATE >= '%s' AND B.START_DATE >= '%s' AND B.END_DATE >= '%s'";
-        dateCondition1 = String.format(dateCondition1, fromDate, fromDate, toDate, toDate);
+        dateCondition1 = String.format(dateCondition1, fromDateStr, fromDateStr, toDateStr, toDateStr);
 
         String dateCondition2 = "B.START_DATE <= '%s' AND B.END_DATE <= '%s' AND B.START_DATE <= '%s' AND B.END_DATE <= '%s'";
-        dateCondition2 = String.format(dateCondition2, fromDate, fromDate, toDate, toDate);
+        dateCondition2 = String.format(dateCondition2, fromDateStr, fromDateStr, toDateStr, toDateStr);
 
         String lowerCapacityBooksSQL = "SELECT COUNT(*) FROM ROOMS_PER_BOOK RPB LEFT JOIN BOOKS B ON RPB.BOOK_ID = B.ID WHERE RPB.ROOM_TYPE = '%s' AND RPB.PEOPLE_NUM < %s AND NOT (%s OR %s)";
         lowerCapacityBooksSQL = String.format(lowerCapacityBooksSQL, roomType, peopleNum, dateCondition1,
@@ -359,7 +365,7 @@ public class Database {
 
             int lowerCapacityBooks, lowerCapacityRooms;
             int sameOrHigherCapacityBooks, sameOrHigherCapacityRooms;
-            int lowerCapacityOverflow;
+            int lowerCapacityOverflow, sameOrHigherCapacityOverflow;
             int finalResult;
 
             Statement stm = Database.createStatement();
@@ -380,20 +386,18 @@ public class Database {
                 lowerCapacityOverflow = 0;
             }
 
+            sameOrHigherCapacityOverflow = sameOrHigherCapacityRooms - sameOrHigherCapacityBooks;
             // It must filter negative results, they're not useful (explained in the algo)
-            if (sameOrHigherCapacityBooks < 0) {
-                sameOrHigherCapacityBooks = 0;
+            if (sameOrHigherCapacityOverflow < 0) {
+                sameOrHigherCapacityOverflow = 0;
             }
 
             // The final result will be the amount of valid rooms, substracting all the
             // already booked rooms, and also substracting the overflow from lower rooms.
+            finalResult = sameOrHigherCapacityOverflow - lowerCapacityOverflow;
 
-            System.out.println(sameOrHigherCapacityRooms);
-            System.out.println(sameOrHigherCapacityBooks);
-            System.out.println(lowerCapacityOverflow);
-
-            finalResult = sameOrHigherCapacityRooms - sameOrHigherCapacityBooks - lowerCapacityOverflow;
-
+            System.out.println(lowerCapacityBooks);
+            System.out.println(sameOrHigherCapacityOverflow);
             System.out.println(finalResult);
 
             return finalResult;

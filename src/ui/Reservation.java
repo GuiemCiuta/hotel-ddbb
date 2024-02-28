@@ -126,10 +126,9 @@ public class Reservation {
                 throw new WrongDatesException();
             }
 
-
             System.out.println(roomType + " " + peopleNum + " " + fromDate + " " + toDate);
 
-            int availableRooms = Database.countEmptyRooms(roomType, peopleNum, fromDate.toString(), toDate.toString());
+            int availableRooms = Database.countEmptyRooms(roomType, peopleNum, fromDate, toDate);
 
             if (availableRooms < 1) {
                 throw new NoAvailableRoomsException();
@@ -141,17 +140,27 @@ public class Reservation {
                 this.createFomo(availableRooms);
             }
 
-            
-
+            // Show total booking amount
+            /*
+             * double totalAmount = Endpoints.calculatePrice(fromDate, toDate, roomType,
+             * peopleNum,
+             * breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
+             * dinnerCheckbox.isSelected());
+             * JLabel totalAmountLabel = new JLabel("Total amount: " + totalAmount);
+             * totalAmountLabel.setBounds(50, 410, 200, 200);
+             * totalAmountLabel.setBackground(new Color(255, 255, 0));
+             * frame.add(totalAmountLabel);
+             */
 
             // If rooms available, let's add a button to book a room
             JButton bookButton = new JButton("Book room!");
-            bookButton.setBounds(50, 410, 200, 50);
-            bookButton.addActionListener(evt -> Endpoints.makeReservation(0, fromDate, toDate, roomType,
-                    peopleNum, breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
-                    breakfastCheckbox.isSelected()));
+            bookButton.addActionListener(evt -> execReservation(fromDate, toDate, roomType, peopleNum));
+
+            bookButton.setBounds(50, 480, 200, 50);
             frame.add(bookButton);
             bookButton.repaint();
+
+            // frame.revalidate();
 
         } catch (NoAvailableRoomsException err) {
 
@@ -177,6 +186,21 @@ public class Reservation {
 
     }
 
+    private void execReservation(java.util.Date fromDate, java.util.Date toDate, String roomType,
+            int peopleNum) {
+        Endpoints.makeReservation(0, fromDate, toDate, roomType,
+                peopleNum, breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
+                breakfastCheckbox.isSelected());
+
+        JOptionPane.showMessageDialog(frame, "Booking done. Thanks!");
+
+        // We'll close the window. That's not user friendly, but it's a really great
+        // short term solution
+        frame.setVisible(false); // you can't see me!
+        frame.dispose(); // Destroy the JFrame object
+
+    }
+
     private void addRoom(JPanel panel) {
         this.roomTypeSelector = new JComboBox(Reservation.ROOM_TYPES);
         InputWLabel roomTypeInput = new InputWLabel("Room Type", roomTypeSelector);
@@ -191,6 +215,7 @@ public class Reservation {
     }
 
     private void makeReservation(String startDate, String endDate, int[] peopleNums) {
-        //Endpoints.makeReservation(0, startDate, endDate, 0, ROOM_TYPES, peopleNums, null, null, null);
+        // Endpoints.makeReservation(0, startDate, endDate, 0, ROOM_TYPES, peopleNums,
+        // null, null, null);
     }
 }
