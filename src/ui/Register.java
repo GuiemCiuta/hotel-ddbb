@@ -52,7 +52,7 @@ public class Register extends JFrame {
 
         JLabel countryInputLabel = new JLabel("Country: ");
         Components.addComponent(frame, countryInputLabel);
-        JTextField countryInput = new JTextField();
+        JComboBox countryInput = new JComboBox(new String[]{"ES", "US", "FR", "FI", "DE", "GB", "NO"});
         Components.addComponent(frame, countryInput);
 
         JLabel emailInputLabel = new JLabel("Email: ");
@@ -96,7 +96,7 @@ public class Register extends JFrame {
         // collector removes it
         registerButton.addActionListener(
                 e -> register(frame, firstNameInput.getText(), lastNameInput.getText(), nationalIdInput.getText(),
-                        addressInput.getText(), countryInput.getText(), emailInput.getText(), phoneNumberInput.getText(),
+                        addressInput.getText(), countryInput.getSelectedItem().toString(), emailInput.getText(), phoneNumberInput.getText(),
                         passwordInput.getText(), confirmPasswordInput.getText()));
 
         gotoLoginButton.addActionListener(e -> gotoLogin(frame));
