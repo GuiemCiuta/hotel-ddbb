@@ -16,24 +16,61 @@ import javax.xml.crypto.Data;
 
 import db.schemas.RoomsSchema;
 import db.schemas.BooksSchema;
+import db.schemas.CustomersSchema;
 import db.schemas.InvoicesSchema;
 import db.schemas.RoomsPerBookSchema;
 
+// Endpoints are all APIs to interact with Database
 public class Endpoints {
-    public static boolean customerLogin(String email, String password) {
+    public static int customerLogin(String email, String password) {
         try {
 
             // Encrypt password
             password = Database.sha256(password);
 
-            ResultSet loggedUser = Database.selectAllWhere("CUSTOMERS",
-                    "EMAIL = " + email + " AND PASSWORD = " + password);
+            String[] params = new String[] {email, password};
 
-            return loggedUser.next();
+            Utils.prepareValuesArrayToIsertDB(params);
+
+
+            ResultSet loggedUser = Database.selectAllWhere("CUSTOMERS",
+                    "EMAIL = " + params[0] + " AND PASSWORD = " + params[1]);
+
+            loggedUser.next();
+
+            return loggedUser.getInt("ID");
 
         } catch (Exception e) {
             System.out.println(e);
-            return false;
+            return -1;
+        }
+    }
+
+    // Returns user id
+    public static int customerRegister(String firstName, String lastName, String nationalId, String address,
+            String email, String phoneNumber, String country, String password) {
+        try {
+
+            // Encrypt password
+            password = Database.sha256(password);
+
+            // This func returns true if everything is fine, and false if not
+            Database.insertWithId("CUSTOMERS", new String[] {
+                    CustomersSchema.FIRST_NAME.toString(),
+                    CustomersSchema.LAST_NAMES.toString(),
+                    CustomersSchema.NATIONAL_ID.toString(),
+                    CustomersSchema.ADDRESS.toString(),
+                    CustomersSchema.EMAIL.toString(),
+                    CustomersSchema.PHONE.toString(),
+                    CustomersSchema.COUNTRY.toString(),
+                    CustomersSchema.PASSWORD.toString(),
+            }, new String[] { firstName, lastName, nationalId, address, email, phoneNumber, country, password });
+
+            return Database.getLastIdInTable("CUSTOMERS");
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return -1;
         }
     }
 
@@ -317,4 +354,5 @@ public class Endpoints {
             return false;
         }
     }
+
 }

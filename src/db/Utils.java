@@ -25,7 +25,18 @@ public class Utils {
             return false;
         }
         try {
-            double d = Double.parseDouble(strNum);
+            float f = Float.parseFloat(strNum);
+
+            // As sometimes, float parses numbers with some letters (e.g. it doesn't return
+            // the expected results with National IDs, that mix numbers and a letter), we'll
+            // make a second comparison
+
+            // So, we'll also check if it contains any letter
+            // In that case, it'll return false
+            if (strNum.matches(".*[a-zA-Z].*")) {
+                return false;
+            }
+
         } catch (NumberFormatException nfe) {
             return false;
         }

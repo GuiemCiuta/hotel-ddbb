@@ -33,10 +33,15 @@ public class Reservation {
     private JDatePickerImpl fromDatePicker, toDatePicker;
     private JCheckBox breakfastCheckbox, lunchCheckbox, dinnerCheckbox;
 
+    // The id of the logged customer
+    int accountId;
+
     private final static String[] ROOM_TYPES = { "Regular", "Suite" };
 
     // https://stackoverflow.com/questions/1385737/scrollable-jpanel
-    public Reservation() {
+    public Reservation(int accountId) {
+        this.accountId = accountId;
+
         // Create the frame
         frame = new JFrame();
 
@@ -188,7 +193,7 @@ public class Reservation {
 
     private void execReservation(java.util.Date fromDate, java.util.Date toDate, String roomType,
             int peopleNum) {
-        Endpoints.makeReservation(0, fromDate, toDate, roomType,
+        Endpoints.makeReservation(accountId, fromDate, toDate, roomType,
                 peopleNum, breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
                 breakfastCheckbox.isSelected());
 
@@ -197,7 +202,7 @@ public class Reservation {
         // We'll close the window. That's not user friendly, but it's a really great
         // short term solution
         frame.setVisible(false); // you can't see me!
-        frame.dispose(); // Destroy the JFrame object
+        frame.dispose(); // Destroy the JFrame object|
 
     }
 
