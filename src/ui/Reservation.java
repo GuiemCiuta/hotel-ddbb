@@ -13,6 +13,7 @@ import com.mysql.cj.protocol.a.PacketSplitter;
 import db.Database;
 import db.Endpoints;
 import db.Utils;
+import exceptions.ExpiredDatesException;
 import exceptions.NoAvailableRoomsException;
 import exceptions.WrongDatesException;
 import ui.components.Components;
@@ -132,9 +133,9 @@ public class Reservation {
                 throw new WrongDatesException();
             }
 
-            if (now.compareTo(fromDate) > 0 || now.compareTo(toDate) > 0) {
-                throw new WrongDatesException();
-
+            // Check that dates are still to happen
+            if ((now.compareTo(fromDate) > 0 || now.compareTo(toDate) > 0)) {
+                throw new ExpiredDatesException();
             }
 
             System.out.println(roomType + " " + peopleNum + " " + fromDate + " " + toDate);
@@ -178,7 +179,7 @@ public class Reservation {
             UIManager.getIcon("OptionPane.warningIcon");
             JOptionPane.showMessageDialog(frame, err, "Info", 2);
 
-        } catch (WrongDatesException err) {
+        } catch (WrongDatesException|ExpiredDatesException err) {
 
             UIManager.getIcon("OptionPane.warningIcon");
             JOptionPane.showMessageDialog(frame, err.getMessage(), "Error", 2);
