@@ -1,8 +1,8 @@
 package ui;
 
 public class Init {
-    final static int VP_WIDTH = 1280;
-    final static int VP_HEIGHT = 720;
+    final static int VP_WIDTH = 1200;
+    final static int VP_HEIGHT = 850;
 
     // Global CSS / styling vars
     public static final String MAIN_FONT = "Dialog";

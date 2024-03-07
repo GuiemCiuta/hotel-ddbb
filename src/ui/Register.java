@@ -19,75 +19,100 @@ public class Register extends JFrame {
 
         // Create the window
         JFrame frame = new JFrame();
+        frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        
         // Create a main layout to place all the elements
-        GridLayout mainLayout = new GridLayout(12, 3, Init.H_GAP_SIZE, Init.V_GAP_SIZE);
-        frame.setLayout(mainLayout);
+        GridLayout mainLayout = new GridLayout(10, 3, Init.H_GAP_SIZE, Init.V_GAP_SIZE);
+        
+        JPanel formPanel = new JPanel();
+        formPanel.setBounds(10, 10, 1400, 1500);
+        formPanel.setLayout(null);
+
+        JPanel leftColPanel = new JPanel();
+        leftColPanel.setBounds(10, 10, 500, 500);
+        leftColPanel.setLayout(mainLayout);
+
+        JPanel rightColPanel = new JPanel();
+        rightColPanel.setBounds(540, 10, 500, 500);
+        rightColPanel.setLayout(mainLayout);
+
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBounds(300, 600, 500, 500);
+        buttonsPanel.setLayout(mainLayout);
+
 
         // Add title
         //JLabel pageH1 = Components.createH1("eSpotifai");
         //Components.addComponent(frame, pageH1);
 
+       /*  JPanel frame = new JPanel();
+        frame.setLayout(null);
+ */
         // Add inputs and their labels
         JLabel firstNameInputLabel = new JLabel("First name: ");
-        Components.addComponent(frame, firstNameInputLabel);
+        Components.addComponent(leftColPanel, firstNameInputLabel);
         JTextField firstNameInput = new JTextField();
-        Components.addComponent(frame, firstNameInput);
+        Components.addComponent(leftColPanel, firstNameInput);
 
         JLabel lastNameInputLabel = new JLabel("Last name: ");
-        Components.addComponent(frame, lastNameInputLabel);
+        Components.addComponent(leftColPanel, lastNameInputLabel);
         JTextField lastNameInput = new JTextField();
-        Components.addComponent(frame, lastNameInput);
+        Components.addComponent(leftColPanel, lastNameInput);
 
         JLabel nationalIdInputLabel = new JLabel("ID: ");
-        Components.addComponent(frame, nationalIdInputLabel);
+        Components.addComponent(leftColPanel, nationalIdInputLabel);
         JTextField nationalIdInput = new JTextField();
-        Components.addComponent(frame, nationalIdInput);
+        Components.addComponent(leftColPanel, nationalIdInput);
 
         JLabel addressInputLabel = new JLabel("Adress: ");
-        Components.addComponent(frame, addressInputLabel);
+        Components.addComponent(leftColPanel, addressInputLabel);
         JTextField addressInput = new JTextField();
-        Components.addComponent(frame, addressInput);
+        Components.addComponent(leftColPanel, addressInput);
 
         JLabel countryInputLabel = new JLabel("Country: ");
-        Components.addComponent(frame, countryInputLabel);
+        Components.addComponent(leftColPanel, countryInputLabel);
         JComboBox countryInput = new JComboBox(new String[]{"ES", "US", "FR", "FI", "DE", "GB", "NO"});
-        Components.addComponent(frame, countryInput);
+        Components.addComponent(leftColPanel, countryInput);
 
         JLabel emailInputLabel = new JLabel("Email: ");
-        Components.addComponent(frame, emailInputLabel);
+        Components.addComponent(rightColPanel, emailInputLabel);
         JTextField emailInput = new JTextField();
-        Components.addComponent(frame, emailInput);
+        Components.addComponent(rightColPanel, emailInput);
 
         JLabel phoneNumberInputLabel = new JLabel("Phone number: ");
-        Components.addComponent(frame, phoneNumberInputLabel);
+        Components.addComponent(rightColPanel, phoneNumberInputLabel);
         JTextField phoneNumberInput = new JTextField();
-        Components.addComponent(frame, phoneNumberInput);
+        Components.addComponent(rightColPanel, phoneNumberInput);
 
         JLabel passwordInputLabel = new JLabel("Password: ");
-        Components.addComponent(frame, passwordInputLabel);
+        Components.addComponent(rightColPanel, passwordInputLabel);
         JPasswordField passwordInput = new JPasswordField();
-        Components.addComponent(frame, passwordInput);
+        Components.addComponent(rightColPanel, passwordInput);
 
         JLabel confirmPasswordInputLabel = new JLabel("Confirm password: ");
-        Components.addComponent(frame, confirmPasswordInputLabel);
+        Components.addComponent(rightColPanel, confirmPasswordInputLabel);
         JPasswordField confirmPasswordInput = new JPasswordField();
-        Components.addComponent(frame, confirmPasswordInput);
+        Components.addComponent(rightColPanel, confirmPasswordInput);
+
 
         // Add button
         JButton registerButton = Components.createButtonS("Register");
-        Components.addComponent(frame, registerButton);
+        Components.addComponent(buttonsPanel, registerButton);
         this.errorLabel = Components.createErrorText(validationError);
-        Components.addComponent(frame, this.errorLabel);
+        Components.addComponent(buttonsPanel, this.errorLabel);
 
         // Add a goto login page button
         JButton gotoLoginButton = Components.createButtonS("Have you got an account?");
-        Components.addComponent(frame, gotoLoginButton);
+        Components.addComponent(buttonsPanel, gotoLoginButton);
+
+        formPanel.add(leftColPanel);
+        formPanel.add(rightColPanel);
+        formPanel.add(buttonsPanel);
+        frame.add(formPanel);
 
         // Display everything
-        frame.pack();
-        frame.setSize(Init.VP_WIDTH, Init.VP_HEIGHT);
+        frame.setSize(1200, 850);
         frame.setVisible(true);
 
         // As passwordInput.getText() is deprecated, we could upgrade it using:
@@ -108,8 +133,8 @@ public class Register extends JFrame {
         new Login();
     }
 
-    // Validates the form
-    public static String validateForm(String firstName, String lastName, String nationalId, String address,
+    // Validates the frame
+    public static String validateframe(String firstName, String lastName, String nationalId, String address,
             String country,
             String email, String phoneNumber,
             String password, String confirmPassword) {
@@ -180,7 +205,7 @@ public class Register extends JFrame {
             String phoneNumber, String password, String confirmPassword) {
         // Check if there are some errors
         // If do, stop the func and notice the user
-        String validationErrors = validateForm(firstName, lastName, nationalId, address, country, email, phoneNumber,
+        String validationErrors = validateframe(firstName, lastName, nationalId, address, country, email, phoneNumber,
                 password,
                 confirmPassword);
         // Update the feedback we're giving to the user

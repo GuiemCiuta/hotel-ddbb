@@ -3,8 +3,6 @@ package ui;
 import java.awt.*;
 import javax.swing.*;
 
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 import db.Endpoints;
 import ui.components.Components;

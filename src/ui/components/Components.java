@@ -12,6 +12,10 @@ public class Components {
         frame.getContentPane().add(component);
     }
 
+    public static void addComponent(JPanel panel, Component component) {
+        panel.add(component);
+    }
+
     // Returns a main title (as h1 in HTML)
     public static JLabel createH1(String content) {
         JLabel title = new JLabel(content);
