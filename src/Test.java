@@ -42,6 +42,6 @@ public class Test {
          */
 
         //new Reservation();
-        new Register();
+        new Reservation(0);
     }
 }

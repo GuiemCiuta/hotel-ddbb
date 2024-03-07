@@ -1,12 +1,10 @@
 package ui;
 
 import java.awt.*;
-import java.net.http.HttpResponse;
 
 import javax.swing.*;
 
 import db.Endpoints;
-import db.schemas.CustomersSchema;
 import ui.components.*;
 
 public class Register extends JFrame {

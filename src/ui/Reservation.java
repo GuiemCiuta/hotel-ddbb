@@ -123,12 +123,18 @@ public class Reservation {
             int peopleNum = Integer.valueOf(peopleNumTextField.getText());
             Date fromDate = (Date) fromDatePicker.getModel().getValue();
             Date toDate = (Date) toDatePicker.getModel().getValue();
+            Date now = new Date();
 
             // Check that the "to date" is later than "from date"
             // Idk why compareTo method gives the second date later even if they're equal.
             // I've found this solution...
             if (fromDate.compareTo(toDate) > 0 || fromDate.toString().equals(toDate.toString())) {
                 throw new WrongDatesException();
+            }
+
+            if (now.compareTo(fromDate) > 0 || now.compareTo(toDate) > 0) {
+                throw new WrongDatesException();
+
             }
 
             System.out.println(roomType + " " + peopleNum + " " + fromDate + " " + toDate);

@@ -15,36 +15,42 @@ public class Login extends JFrame {
 
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(null);
 
         // Create a main layout to place all the elements
         GridLayout mainLayout = new GridLayout(10, 3, Init.H_GAP_SIZE, Init.V_GAP_SIZE);
-        frame.setLayout(mainLayout);
+
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(mainLayout);
+        formPanel.setBounds(10, 10, 500, 500);
 
         // Add inputs
         JLabel emailInputLabel = new JLabel("Email: ");
-        Components.addComponent(frame, emailInputLabel);
+        Components.addComponent(formPanel, emailInputLabel);
         JTextField emailInput = new JTextField();
-        Components.addComponent(frame, emailInput);
+        Components.addComponent(formPanel, emailInput);
 
         JLabel passwordInputLabel = new JLabel("Password: ");
-        Components.addComponent(frame, passwordInputLabel);
+        Components.addComponent(formPanel, passwordInputLabel);
         JPasswordField passwordInput = new JPasswordField();
-        Components.addComponent(frame, passwordInput);
+        Components.addComponent(formPanel, passwordInput);
 
         // Add button
         JButton loginButton = Components.createButtonS("Login");
-        Components.addComponent(frame, loginButton);
+        Components.addComponent(formPanel, loginButton);
 
         this.errorLabel = Components.createErrorText(validationError);
-        Components.addComponent(frame, this.errorLabel);
+        Components.addComponent(formPanel, this.errorLabel);
 
         // Add a goto register page button
-        JButton gotoRegisterButton = Components.createButtonS("Haven't account yet?");
-        Components.addComponent(frame, gotoRegisterButton);
+        JButton gotoRegisterButton = Components.createButtonS("Have you already got an account?");
+        Components.addComponent(formPanel, gotoRegisterButton);
+
+        frame.add(formPanel);
 
         // Display everything
         frame.pack();
-        frame.setSize(Init.VP_WIDTH, Init.VP_HEIGHT);
+        frame.setSize(520, 450);
         frame.setVisible(true); // By default, it'll be visible
 
         // As passwordInput.getText() is deprecated, we could upgrade it using:
