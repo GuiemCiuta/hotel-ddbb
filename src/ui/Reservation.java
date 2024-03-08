@@ -54,7 +54,7 @@ public class Reservation {
         // Add title
         JLabel pageH1 = Components.createH1("Hotelsa Booking");
         pageH1.setBounds(10, 10, 400, 50);
-        frame.add(pageH1);
+        frame.getContentPane().add(pageH1);
 
         // Form
         JPanel formPanel = new JPanel();
@@ -99,10 +99,10 @@ public class Reservation {
         Img roomPic = new Img(
                 "hotel.jpg");
         roomPic.setBounds(550, 100, 600, 400);
-        frame.add(roomPic);
+        frame.getContentPane().add(roomPic);
         roomPic.repaint();
 
-        frame.add(formPanel);
+        frame.getContentPane().add(formPanel);
 
         // Display everything
         frame.pack();
@@ -153,26 +153,31 @@ public class Reservation {
             }
 
             // Show total booking amount
-            /*
-             * double totalAmount = Endpoints.calculatePrice(fromDate, toDate, roomType,
-             * peopleNum,
-             * breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
-             * dinnerCheckbox.isSelected());
-             * JLabel totalAmountLabel = new JLabel("Total amount: " + totalAmount);
-             * totalAmountLabel.setBounds(50, 410, 200, 200);
-             * totalAmountLabel.setBackground(new Color(255, 255, 0));
-             * frame.add(totalAmountLabel);
-             */
+            double totalAmount = Endpoints.calculatePrice(fromDate, toDate, roomType,
+            peopleNum,
+            breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
+            dinnerCheckbox.isSelected());
+
+            JPanel totalAmountLabelContainer = new JPanel();
+            totalAmountLabelContainer.setLayout(null);
+            totalAmountLabelContainer.setBounds(50, 410, 200, 50);
+            totalAmountLabelContainer.revalidate();
+
+            JLabel totalAmountLabel = new JLabel("Total amount: " + totalAmount);
+            totalAmountLabel.setBounds(10, 10, 180, 40);
+            totalAmountLabelContainer.add(totalAmountLabel);
+
+            frame.getContentPane().add(totalAmountLabelContainer);
+            totalAmountLabelContainer.repaint();
 
             // If rooms available, let's add a button to book a room
             JButton bookButton = new JButton("Book room!");
             bookButton.addActionListener(evt -> execReservation(fromDate, toDate, roomType, peopleNum));
 
             bookButton.setBounds(50, 480, 200, 50);
-            frame.add(bookButton);
+            frame.getContentPane().add(bookButton);
             bookButton.repaint();
 
-            // frame.revalidate();
 
         } catch (NoAvailableRoomsException err) {
 
