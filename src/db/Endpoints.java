@@ -22,28 +22,25 @@ import db.schemas.RoomsPerBookSchema;
 
 // Endpoints are all APIs to interact with Database
 public class Endpoints {
-    public static int customerLogin(String email, String password) {
+    public static ResultSet customerLogin(String email, String password) {
         try {
 
             // Encrypt password
             password = Database.sha256(password);
 
-            String[] params = new String[] {email, password};
+            String[] params = new String[] { email, password };
 
             Utils.prepareValuesArrayToIsertDB(params);
 
-
-            ResultSet loggedUser = Database.selectAllWhere("CUSTOMERS",
+            return Database.selectAllWhere("CUSTOMERS",
                     "EMAIL = " + params[0] + " AND PASSWORD = " + params[1]);
 
-            loggedUser.next();
-
-            return loggedUser.getInt("ID");
 
         } catch (Exception e) {
             System.out.println(e);
-            return -1;
         }
+
+        return null;
     }
 
     // Returns user id
@@ -71,6 +68,18 @@ public class Endpoints {
         } catch (Exception e) {
             System.out.println(e);
             return -1;
+        }
+    }
+
+    // Gets all the info from a user's booking history
+    public static ResultSet retrieveCustomerBooks(Customer customer) {
+        try {
+
+            return Database.selectAllWhere("BOOKS", "CUSTOMER_ID = " + customer.getUserId());
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
         }
     }
 

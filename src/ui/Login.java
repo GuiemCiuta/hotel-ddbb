@@ -1,9 +1,12 @@
 package ui;
 
 import java.awt.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.*;
 
-
+import db.Customer;
 import db.Endpoints;
 import ui.components.Components;
 
@@ -76,10 +79,21 @@ public class Login extends JFrame {
             return;
         }
 
-        int userId = Endpoints.customerLogin(email, password);
-        if (userId >= 0) {
-            frame.dispose();
-            ClientUtilities.login(userId);
+        ResultSet customerData = Endpoints.customerLogin(email, password);
+
+        try {
+            // Check if user exists
+            if (customerData.next()) {
+                frame.dispose();
+                ClientUtilities.login(customerData);
+
+            } else {
+                UIManager.getIcon("OptionPane.warningIcon");
+                JOptionPane.showMessageDialog(frame, "Login data is not correct", "Info", 2);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
         }
 
     }

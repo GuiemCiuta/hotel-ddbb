@@ -10,6 +10,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import com.mysql.cj.protocol.a.PacketSplitter;
 
+import db.Customer;
 import db.Database;
 import db.Endpoints;
 import db.Utils;
@@ -33,15 +34,13 @@ public class Reservation {
     private JTextField peopleNumTextField;
     private JDatePickerImpl fromDatePicker, toDatePicker;
     private JCheckBox breakfastCheckbox, lunchCheckbox, dinnerCheckbox;
-
-    // The id of the logged customer
-    int accountId;
+    private Customer customer;
 
     private final static String[] ROOM_TYPES = { "Regular", "Suite" };
 
     // https://stackoverflow.com/questions/1385737/scrollable-jpanel
-    public Reservation(int accountId) {
-        this.accountId = accountId;
+    public Reservation(Customer customer) {
+        this.customer = customer;
 
         // Create the frame
         frame = new JFrame();
@@ -154,9 +153,9 @@ public class Reservation {
 
             // Show total booking amount
             double totalAmount = Endpoints.calculatePrice(fromDate, toDate, roomType,
-            peopleNum,
-            breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
-            dinnerCheckbox.isSelected());
+                    peopleNum,
+                    breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
+                    dinnerCheckbox.isSelected());
 
             JPanel totalAmountLabelContainer = new JPanel();
             totalAmountLabelContainer.setLayout(null);
@@ -178,13 +177,12 @@ public class Reservation {
             frame.getContentPane().add(bookButton);
             bookButton.repaint();
 
-
         } catch (NoAvailableRoomsException err) {
 
             UIManager.getIcon("OptionPane.warningIcon");
             JOptionPane.showMessageDialog(frame, err, "Info", 2);
 
-        } catch (WrongDatesException|ExpiredDatesException err) {
+        } catch (WrongDatesException | ExpiredDatesException err) {
 
             UIManager.getIcon("OptionPane.warningIcon");
             JOptionPane.showMessageDialog(frame, err.getMessage(), "Error", 2);
@@ -205,7 +203,8 @@ public class Reservation {
 
     private void execReservation(java.util.Date fromDate, java.util.Date toDate, String roomType,
             int peopleNum) {
-        Endpoints.makeReservation(accountId, fromDate, toDate, roomType,
+                //customer.getUserId()
+        Endpoints.makeReservation(customer.getUserId(), fromDate, toDate, roomType,
                 peopleNum, breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
                 breakfastCheckbox.isSelected());
 

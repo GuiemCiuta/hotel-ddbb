@@ -41,7 +41,7 @@ public class Test {
          * }
          */
 
-        new Reservation(0);
-        //new Login();
+        //new Reservation(null);
+        new Login();
     }
 }

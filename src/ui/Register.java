@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import db.Customer;
 import db.Endpoints;
 import ui.components.*;
 
@@ -225,4 +226,19 @@ public class Register extends JFrame {
             ClientUtilities.login(accountId);
         }
     }
+
+    /**
+     * @return JLabel return the errorLabel
+     */
+    public JLabel getErrorLabel() {
+        return errorLabel;
+    }
+
+    /**
+     * @param errorLabel the errorLabel to set
+     */
+    public void setErrorLabel(JLabel errorLabel) {
+        this.errorLabel = errorLabel;
+    }
+
 }
