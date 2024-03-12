@@ -74,14 +74,14 @@ public class ClientUtilities {
     }
 
     public static void login(ResultSet customerData) {
-        new Reservation(loadCustomer(customerData));
+        new CustomerArea(loadCustomer(customerData));
     }
 
     public static void login(int customerId) {
         try {
             ResultSet customerData = Database.selectAllWhere("CUSTOMERS", "ID = " + customerId);
 
-            new Reservation(loadCustomer(customerData));
+            login(customerData);
 
         } catch (Exception e) {
             System.out.println(e);
