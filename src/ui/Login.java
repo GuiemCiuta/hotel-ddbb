@@ -85,7 +85,7 @@ public class Login extends JFrame {
             // Check if user exists
             if (customerData.next()) {
                 frame.dispose();
-                ClientUtilities.login(customerData);
+                ClientUtilities.login(this, customerData);
 
             } else {
                 UIManager.getIcon("OptionPane.warningIcon");

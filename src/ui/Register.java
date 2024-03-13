@@ -123,12 +123,12 @@ public class Register extends JFrame {
                         addressInput.getText(), countryInput.getSelectedItem().toString(), emailInput.getText(), phoneNumberInput.getText(),
                         passwordInput.getText(), confirmPasswordInput.getText()));
 
-        gotoLoginButton.addActionListener(e -> gotoLogin(frame));
+        gotoLoginButton.addActionListener(e -> gotoLogin());
 
     }
 
-    private void gotoLogin(JFrame frame) {
-        frame.dispose();
+    private void gotoLogin() {
+        this.dispose();
         new Login();
     }
 
@@ -223,7 +223,7 @@ public class Register extends JFrame {
         // login.
         if (accountId >= 0) {
             frame.dispose();
-            ClientUtilities.login(accountId);
+            ClientUtilities.login(this, accountId);
         }
     }
 

@@ -95,6 +95,11 @@ public class Reservation {
         searchButton.setBounds(50, 350, 100, 50);
         formPanel.add(searchButton);
 
+        JButton backButton = new JButton("Go Back");
+        backButton.addActionListener(e -> ClientUtilities.gotoCustomerArea(this.frame, this.customer));
+        backButton.setBounds(50, 700, 100, 50);
+        formPanel.add(backButton);
+
         Img roomPic = new Img(
                 "hotel.jpg");
         roomPic.setBounds(550, 100, 600, 400);
@@ -228,10 +233,5 @@ public class Reservation {
         InputWLabel peopleNumInput = new InputWLabel("Number of People", peopleNumTextField);
         peopleNumInput.setBounds(10, 10, 50, 100);
         panel.add(peopleNumInput);
-    }
-
-    private void makeReservation(String startDate, String endDate, int[] peopleNums) {
-        // Endpoints.makeReservation(0, startDate, endDate, 0, ROOM_TYPES, peopleNums,
-        // null, null, null);
     }
 }

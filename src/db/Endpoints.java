@@ -74,7 +74,7 @@ public class Endpoints {
     // Gets all the info from a user's booking history
     public static ResultSet retrieveCustomerBooks(Customer customer) {
         try {
-
+            System.out.println("CUSTOMER_ID = " + customer.getUserId());
             return Database.selectAllWhere("BOOKS", "CUSTOMER_ID = " + customer.getUserId());
 
         } catch (Exception e) {

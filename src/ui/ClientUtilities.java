@@ -3,6 +3,8 @@ package ui;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JFrame;
+
 import db.Customer;
 import db.Database;
 
@@ -73,15 +75,25 @@ public class ClientUtilities {
         return null;
     }
 
-    public static void login(ResultSet customerData) {
-        new CustomerArea(loadCustomer(customerData));
+    public static void login(JFrame currentFrame, ResultSet customerData) {
+        gotoCustomerArea(currentFrame, loadCustomer(customerData));
     }
 
-    public static void login(int customerId) {
+    public static void gotoCustomerArea(JFrame currentFrame, Customer customer) {
+        new CustomerArea(customer);
+        currentFrame.dispose();
+    }
+
+    public static void gotoReservation(JFrame currentFrame, Customer customer) {
+        new Reservation(customer);
+        currentFrame.dispose();
+    }
+
+    public static void login(JFrame currentFrame, int customerId) {
         try {
             ResultSet customerData = Database.selectAllWhere("CUSTOMERS", "ID = " + customerId);
 
-            login(customerData);
+            login(currentFrame, customerData);
 
         } catch (Exception e) {
             System.out.println(e);

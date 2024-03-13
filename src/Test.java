@@ -10,6 +10,7 @@ import com.mysql.cj.util.Util;
 import db.Database;
 import db.Setup;
 import db.Utils;
+import ui.CustomerArea;
 import ui.Login;
 import ui.Register;
 import ui.Reservation;
@@ -42,6 +43,7 @@ public class Test {
          */
 
         //new Reservation(null);
-        new Login();
+        //new Login();
+        new CustomerArea(null);
     }
 }
