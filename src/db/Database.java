@@ -257,6 +257,8 @@ public class Database {
             String queryTemplate = "SELECT * FROM %s WHERE %s %s";
             String query = String.format(queryTemplate, table, filter, suffix);
 
+            System.out.println(query);
+
             // Execute the query
             Statement stm = Database.createStatement();
             return stm.executeQuery(query);
@@ -412,7 +414,7 @@ public class Database {
     // As it may seem a generic function to make a sql query
     // I'll use it for updating, so if I want to upgrade the function in the future,
     // all updates come here.
-    public static boolean update(String query) {
+    public static boolean query(String query) {
         try {
 
             Statement stm = Database.createStatement();

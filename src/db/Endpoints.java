@@ -75,7 +75,7 @@ public class Endpoints {
     public static ResultSet retrieveCustomerBooks(Customer customer) {
         try {
             System.out.println("CUSTOMER_ID = " + customer.getUserId());
-            return Database.selectAllWhere("BOOKS", "CUSTOMER_ID = " + customer.getUserId());
+            return Database.selectAllWhere("BOOKS", "CUSTOMER_ID = " + customer.getUserId(), "ORDER BY ID DESC");
 
         } catch (Exception e) {
             System.out.println(e);
@@ -263,10 +263,10 @@ public class Endpoints {
     public static boolean cancelBook(int bookId) {
         try {
 
-            Database.update("UPDATE BOOKS SET CANCELED = TRUE WHERE ID = " + bookId);
+            Database.query("UPDATE BOOKS SET CANCELED = TRUE WHERE ID = " + bookId);
 
             // FOR ROOMS
-            Database.update("UPDATE ROOMS_PER_BOOK SET CANCELED = TRUE WHERE BOOK_ID = " + bookId);
+            Database.query("UPDATE ROOMS_PER_BOOK SET CANCELED = TRUE WHERE BOOK_ID = " + bookId);
 
             return true;
 

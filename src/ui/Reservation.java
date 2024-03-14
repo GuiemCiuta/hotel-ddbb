@@ -208,8 +208,8 @@ public class Reservation {
 
     private void execReservation(java.util.Date fromDate, java.util.Date toDate, String roomType,
             int peopleNum) {
-                //customer.getUserId()
-        Endpoints.makeReservation(customer.getUserId(), fromDate, toDate, roomType,
+        // customer.getUserId()
+        Endpoints.makeReservation(0, fromDate, toDate, roomType,
                 peopleNum, breakfastCheckbox.isSelected(), lunchCheckbox.isSelected(),
                 breakfastCheckbox.isSelected());
 
@@ -217,9 +217,7 @@ public class Reservation {
 
         // We'll close the window. That's not user friendly, but it's a really great
         // short term solution
-        frame.setVisible(false); // you can't see me!
-        frame.dispose(); // Destroy the JFrame object|
-
+        ClientUtilities.gotoCustomerArea(frame, customer);
     }
 
     private void addRoom(JPanel panel) {
