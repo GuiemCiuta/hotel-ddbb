@@ -11,6 +11,8 @@ public class Setup {
     // The order is the most logical one: breakfast, lunch & dinner
     public static double[] MEALS_PRICES = new double[] {7.5, 10.5, 10.5};
 
+    public static Company company = new Company("B07316763", "Hotel, SA", "C/Fusters n7, POICI 07760");
+
     // Constructor
     public Setup() {
         createTables();

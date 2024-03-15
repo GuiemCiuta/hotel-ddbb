@@ -43,7 +43,7 @@ public class CustomerArea extends JFrame {
          */
 
         JButton bookButton = new JButton("Make a booking");
-        bookButton.addActionListener(e -> ClientUtilities.gotoReservation(this, customer));
+        bookButton.addActionListener(e -> ClientUtilities.gotoReservation(this, this.customer));
         bookButton.setBounds(10, 110, 150, 40);
         this.add(bookButton);
 
@@ -96,6 +96,7 @@ public class CustomerArea extends JFrame {
             JOptionPane.showMessageDialog(this, "Something went wrong", "Warning", 2);
         }
 
+        this.removeAll();
         this.invalidate();
         this.validate();
         this.repaint();

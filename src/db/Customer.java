@@ -6,7 +6,8 @@ public class Customer extends Person {
     private String email;
     private String phoneNumber;
 
-    public Customer(String nationalId, String firstName, String lastName, String country, int userId, String address, String email, String phoneNumber) {
+    public Customer(String nationalId, String firstName, String lastName, String country, int userId, String address,
+            String email, String phoneNumber) {
         super(nationalId, firstName, lastName, country);
 
         this.userId = userId;
@@ -15,7 +16,9 @@ public class Customer extends Person {
         this.phoneNumber = phoneNumber;
     }
 
-    
+    public String getFullName() {
+        return this.getFirstName() + " " + this.getLastName();
+    }
 
     /**
      * @return int return the userId

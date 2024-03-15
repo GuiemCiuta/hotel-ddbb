@@ -11,6 +11,7 @@ import db.Database;
 import db.Setup;
 import db.Utils;
 import ui.CustomerArea;
+import ui.DisplayInvoice;
 import ui.Login;
 import ui.Register;
 import ui.Reservation;
@@ -44,6 +45,7 @@ public class Test {
 
         //new Reservation(null);
         //new Login();
-        new CustomerArea(null);
+        //new CustomerArea(null);
+        new DisplayInvoice(null);
     }
 }

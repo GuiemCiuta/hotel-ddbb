@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Utils {
     // Wraps with quotation marks the string
@@ -78,6 +80,12 @@ public class Utils {
     public static String convertDateToString(Date date) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         return df.format(date);
+    }
+
+    public static LocalDate convertStringToLocalDate(String dateStr) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(dateStr, df);
+
     }
 
     public static String getExecutionPath() {
