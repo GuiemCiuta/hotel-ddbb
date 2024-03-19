@@ -1,6 +1,7 @@
 package db;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.DateFormat;
@@ -90,5 +91,10 @@ public class Utils {
 
     public static String getExecutionPath() {
         return System.getProperty("user.dir");
+    }
+
+    public static int getDifferenceDays(Date d1, Date d2) {
+        long diff = d2.getTime() - d1.getTime();
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 }

@@ -320,6 +320,18 @@ public class Database {
         }
     }
 
+    public static ResultSet executeQueryRS(String query) {
+        try {
+            // Execute the query
+            Statement stm = Database.createStatement();
+            return stm.executeQuery(query);
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
     // A function to get the results of a SQL query that must return only a count
     // statement
     private static int getCountSQLQuery(String query, Statement stm) {

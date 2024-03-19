@@ -17,6 +17,7 @@ import javax.swing.UIManager;
 import db.Customer;
 import db.Database;
 import db.Endpoints;
+import db.Invoice;
 import ui.components.Components;
 
 public class CustomerArea extends JFrame {
@@ -66,12 +67,19 @@ public class CustomerArea extends JFrame {
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate bookingStartDate = LocalDate.parse(customerBookings.getString(("START_DATE")), df);
 
+                // Display "cancel book" button
                 if (bookingStartDate.compareTo(LocalDate.now()) > -1 && !bookingCanceled) {
                     JButton cancelBookButton = new JButton("Cancel book");
                     cancelBookButton.addActionListener(e -> cancelBook(bookingId));
                     cancelBookButton.setBounds(510, 200 + (25 * i), 200, 25);
                     this.add(cancelBookButton);
                 }
+
+                // Display "show invoice" button
+                JButton showInvoiceButton = new JButton("Show invoice");
+                showInvoiceButton.addActionListener(e -> showInvoice(bookingId));
+                showInvoiceButton.setBounds(610, 200 + (25 * i), 200, 25);
+                this.add(showInvoiceButton);
 
             }
 
@@ -84,6 +92,12 @@ public class CustomerArea extends JFrame {
         // Display everything
         this.setSize(1200, 850);
         this.setVisible(true);
+    }
+
+    private void showInvoice(String bookingIdStr) {
+        Invoice invoice = ClientUtilities.loadInvoice(this.customer, bookingIdStr);
+
+        ClientUtilities.gotoInvoice(this, invoice);
     }
 
     private void cancelBook(String bookIdStr) {

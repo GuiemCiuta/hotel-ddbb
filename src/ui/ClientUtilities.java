@@ -5,8 +5,10 @@ import java.sql.SQLException;
 
 import javax.swing.JFrame;
 
+import db.Booking;
 import db.Customer;
 import db.Database;
+import db.Invoice;
 
 public class ClientUtilities {
 
@@ -75,6 +77,41 @@ public class ClientUtilities {
         return null;
     }
 
+    public static Invoice loadInvoice(Customer customer, String bookingIdStr) {
+        String query = "SELECT * FROM INVOICES I JOIN BOOKS B ON I.BOOK_ID = B.ID WHERE B.ID = " + bookingIdStr
+                + " AND B.CUSTOMER_ID = " + customer.getUserId();
+
+        ResultSet rs = Database.executeQueryRS(query);
+
+        try {
+            if (rs.next()) {
+                return loadInvoice(customer, rs);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        return null;
+
+    }
+
+    // We will load customer using
+    public static Invoice loadInvoice(Customer customer, ResultSet retrivedInvoiceData) {
+        try {
+            Booking booking = new Booking(customer, retrivedInvoiceData.getString("START_DATE"),
+                    retrivedInvoiceData.getString("END_DATE"), retrivedInvoiceData.getDouble("AMOUNT"),
+                    retrivedInvoiceData.getBoolean("CANCELED"));
+
+            return new Invoice(retrivedInvoiceData.getInt("ID"), booking);
+
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        return null;
+    }
+
     public static void login(JFrame currentFrame, ResultSet customerData) {
         gotoCustomerArea(currentFrame, loadCustomer(customerData));
     }
@@ -86,6 +123,11 @@ public class ClientUtilities {
 
     public static void gotoReservation(JFrame currentFrame, Customer customer) {
         new Reservation(customer);
+        currentFrame.dispose();
+    }
+
+    public static void gotoInvoice(JFrame currentFrame, Invoice invoice) {
+        new DisplayInvoice(invoice);
         currentFrame.dispose();
     }
 

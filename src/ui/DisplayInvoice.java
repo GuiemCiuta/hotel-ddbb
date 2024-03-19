@@ -15,11 +15,11 @@ public class DisplayInvoice extends JFrame {
     Invoice invoice;
 
     public DisplayInvoice(Invoice invoice) {
-        // this.invoice = invoice;
-        Customer customer = new Customer("41747470D", "Guiem", "Bagur Moll", "ES", 0, "Camí Capelletes s/n",
+        this.invoice = invoice;
+       /*  Customer customer = new Customer("41747470D", "Guiem", "Bagur Moll", "ES", 0, "Camí Capelletes s/n",
                 "guillembagurmoll@gmail.com", "682572005");
 
-        this.invoice = new Invoice(10, new Booking(customer, "2024-03-24", "2024-03-28", 100.23, false));
+        this.invoice = new Invoice(10, new Booking(customer, "2024-03-24", "2024-03-28", 100.23, false)); */
 
         // Create a main layout to place all the elements
         this.setSize(1000, 700);
@@ -127,20 +127,26 @@ public class DisplayInvoice extends JFrame {
 
         JLabel amountPerDay = new JLabel();
         amountPerDay.setText(
-                Double.toString(this.getAmountPerNight()));
+            String.format("%.2f", this.getAmountPerNight()));
         amountPerDay.setBounds(260, 30, 320, 25);
         commercialData.add(amountPerDay);
+     
+        JLabel subtotalAmount = new JLabel();
+        subtotalAmount.setText(
+            String.format("%.2f", this.invoice.getBooking().getAmount()));
+        subtotalAmount.setBounds(390, 30, 320, 25);
+        commercialData.add(subtotalAmount);   
 
         JLabel vat = new JLabel();
         vat.setText(
-                Double.toString(this.calculateVat()));
+                String.format("%.2f", this.calculateVat()));
         vat.setBounds(390, 200, 320, 25);
         commercialData.add(vat);
 
         JLabel totalAmount = new JLabel();
         totalAmount.setText(
-                Double.toString(this.getFinalAmount()));
-        vat.setBounds(390, 230, 320, 25);
+            String.format("%.2f", this.getFinalAmount()));
+        totalAmount.setBounds(390, 230, 320, 25);
         commercialData.add(totalAmount);
 
         this.add(commercialData);

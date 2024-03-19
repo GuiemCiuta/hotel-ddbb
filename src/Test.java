@@ -45,7 +45,7 @@ public class Test {
 
         //new Reservation(null);
         //new Login();
-        //new CustomerArea(null);
-        new DisplayInvoice(null);
+        new CustomerArea(null);
+        //new DisplayInvoice(null);
     }
 }

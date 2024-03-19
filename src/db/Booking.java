@@ -1,7 +1,9 @@
 package db;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 public class Booking {
     private Customer customer;
@@ -19,12 +21,12 @@ public class Booking {
     }
 
     public Booking(Customer customer, String startDate, String endDate, double amount, boolean canceled) {
-        this(customer, Utils.convertStringToLocalDate(startDate), Utils.convertStringToLocalDate(startDate), amount,
+        this(customer, Utils.convertStringToLocalDate(startDate), Utils.convertStringToLocalDate(endDate), amount,
                 canceled);
     }
 
     public int getNightsNum() {
-        return ((int) ChronoUnit.DAYS.between(endDate, startDate));
+        return (int) ChronoUnit.DAYS.between(this.startDate, this.endDate);
     }
 
     /**
