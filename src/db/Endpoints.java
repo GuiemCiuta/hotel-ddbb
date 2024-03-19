@@ -35,7 +35,6 @@ public class Endpoints {
             return Database.selectAllWhere("CUSTOMERS",
                     "EMAIL = " + params[0] + " AND PASSWORD = " + params[1]);
 
-
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -100,81 +99,78 @@ public class Endpoints {
         }
     }
 
-    /*
-     * public static boolean makeReservation(int customerId, String startDate,
-     * String endDate, double amount,
-     * String[] roomTypes,
-     * int[] peopleNums,
-     * boolean[] breakfastIncluded,
-     * boolean[] lunchIncluded,
-     * boolean[] dinnerIncluded)
-     * {
-     * try {
-     * 
-     * String customerIdStr = Integer.toString(customerId);
-     * String amountStr = Double.toString(amount);
-     * 
-     * // Insert data into bookings register
-     * Database.insertWithId("BOOKS",
-     * new String[] {
-     * BooksSchema.CUSTOMER_ID.toString(),
-     * BooksSchema.START_DATE.toString(),
-     * BooksSchema.END_DATE.toString(),
-     * BooksSchema.AMOUNT.toString(),
-     * BooksSchema.CANCELED.toString(),
-     * },
-     * new String[] {
-     * customerIdStr,
-     * startDate,
-     * endDate,
-     * amountStr,
-     * "false"
-     * });
-     * 
-     * // Id of the current booking
-     * int bookingId = Database.getLastIdInTable("BOOKS");
-     * 
-     * // It means that has been an error
-     * if (bookingId < 0) {
-     * throw new Exception();
-     * }
-     * 
-     * String bookingIdStr = Integer.toString(bookingId);
-     * 
-     * for (int i = 0; i < roomTypes.length; i++) {
-     * String roomType = roomTypes[i];
-     * int peopleNum = peopleNums[i];
-     * String peopleNumStr = Integer.toString(peopleNum);
-     * 
-     * // Saves all the booking's details into the "ROOMS_PER_BOOK" table
-     * // It's related with the "BOOKS" table via id.
-     * Database.insertWithId("ROOMS_PER_BOOK",
-     * new String[] {
-     * RoomsPerBookSchema.BOOK_ID.toString(),
-     * RoomsPerBookSchema.ROOM_TYPE.toString(),
-     * RoomsPerBookSchema.PEOPLE_NUM.toString(),
-     * RoomsPerBookSchema.BREAKFAST.toString(),
-     * RoomsPerBookSchema.LUNCH.toString(),
-     * RoomsPerBookSchema.DINNER.toString(),
-     * },
-     * new String[] {
-     * bookingIdStr,
-     * roomType,
-     * peopleNumStr,
-     * Boolean.toString(breakfastIncluded[i]),
-     * Boolean.toString(lunchIncluded[i]),
-     * Boolean.toString(dinnerIncluded[i]),
-     * });
-     * }
-     * 
-     * return true;
-     * 
-     * } catch (Exception e) {
-     * System.out.println(e);
-     * return false;
-     * }
-     * }
-     */
+    public static boolean makeReservation(int customerId, String startDate,
+            String endDate, double amount,
+            String[] roomTypes,
+            int[] peopleNums,
+            boolean[] breakfastIncluded,
+            boolean[] lunchIncluded,
+            boolean[] dinnerIncluded) {
+        try {
+
+            String customerIdStr = Integer.toString(customerId);
+            String amountStr = Double.toString(amount);
+
+            // Insert data into bookings register
+            Database.insertWithId("BOOKS",
+                    new String[] {
+                            BooksSchema.CUSTOMER_ID.toString(),
+                            BooksSchema.START_DATE.toString(),
+                            BooksSchema.END_DATE.toString(),
+                            BooksSchema.AMOUNT.toString(),
+                            BooksSchema.CANCELED.toString(),
+                    },
+                    new String[] {
+                            customerIdStr,
+                            startDate,
+                            endDate,
+                            amountStr,
+                            "false"
+                    });
+
+            // Id of the current booking
+            int bookingId = Database.getLastIdInTable("BOOKS");
+
+            // It means that has been an error
+            if (bookingId < 0) {
+                throw new Exception();
+            }
+
+            String bookingIdStr = Integer.toString(bookingId);
+
+            for (int i = 0; i < roomTypes.length; i++) {
+                String roomType = roomTypes[i];
+                int peopleNum = peopleNums[i];
+                String peopleNumStr = Integer.toString(peopleNum);
+
+                // Saves all the booking's details into the "ROOMS_PER_BOOK" table
+                // It's related with the "BOOKS" table via id.
+                Database.insertWithId("ROOMS_PER_BOOK",
+                        new String[] {
+                                RoomsPerBookSchema.BOOK_ID.toString(),
+                                RoomsPerBookSchema.ROOM_TYPE.toString(),
+                                RoomsPerBookSchema.PEOPLE_NUM.toString(),
+                                RoomsPerBookSchema.BREAKFAST.toString(),
+                                RoomsPerBookSchema.LUNCH.toString(),
+                                RoomsPerBookSchema.DINNER.toString(),
+                        },
+                        new String[] {
+                                bookingIdStr,
+                                roomType,
+                                peopleNumStr,
+                                Boolean.toString(breakfastIncluded[i]),
+                                Boolean.toString(lunchIncluded[i]),
+                                Boolean.toString(dinnerIncluded[i]),
+                        });
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
 
     public static boolean makeReservation(int customerId, String startDateString, String endDateString,
             String roomType, int peopleNum, boolean breakfastIncluded, boolean lunchIncluded,

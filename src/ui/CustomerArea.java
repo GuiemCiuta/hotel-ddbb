@@ -78,7 +78,7 @@ public class CustomerArea extends JFrame {
                 // Display "show invoice" button
                 JButton showInvoiceButton = new JButton("Show invoice");
                 showInvoiceButton.addActionListener(e -> showInvoice(bookingId));
-                showInvoiceButton.setBounds(610, 200 + (25 * i), 200, 25);
+                showInvoiceButton.setBounds(810, 200 + (25 * i), 200, 25);
                 this.add(showInvoiceButton);
 
             }
@@ -110,9 +110,7 @@ public class CustomerArea extends JFrame {
             JOptionPane.showMessageDialog(this, "Something went wrong", "Warning", 2);
         }
 
-        this.removeAll();
-        this.invalidate();
-        this.validate();
-        this.repaint();
+        this.dispose();
+        new CustomerArea(this.customer);
     }
 }
