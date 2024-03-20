@@ -15,6 +15,7 @@ import db.Database;
 import db.Endpoints;
 import db.Utils;
 import exceptions.ExpiredDatesException;
+import exceptions.InvalidPeopleNumException;
 import exceptions.NoAvailableRoomsException;
 import exceptions.WrongDatesException;
 import ui.components.Components;
@@ -130,6 +131,11 @@ public class Reservation {
             Date toDate = (Date) toDatePicker.getModel().getValue();
             Date now = new Date();
 
+
+            if(peopleNum < 1) {
+                throw new InvalidPeopleNumException();
+            }
+
             // Check that the "to date" is later than "from date"
             // Idk why compareTo method gives the second date later even if they're equal.
             // I've found this solution...
@@ -141,6 +147,7 @@ public class Reservation {
             if ((now.compareTo(fromDate) > 0 || now.compareTo(toDate) > 0)) {
                 throw new ExpiredDatesException();
             }
+
 
             System.out.println(roomType + " " + peopleNum + " " + fromDate + " " + toDate);
 
@@ -187,7 +194,7 @@ public class Reservation {
             UIManager.getIcon("OptionPane.warningIcon");
             JOptionPane.showMessageDialog(frame, err, "Info", 2);
 
-        } catch (WrongDatesException | ExpiredDatesException err) {
+        } catch (WrongDatesException | ExpiredDatesException | InvalidPeopleNumException err) {
 
             UIManager.getIcon("OptionPane.warningIcon");
             JOptionPane.showMessageDialog(frame, err.getMessage(), "Error", 2);
